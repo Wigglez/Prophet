@@ -93,15 +93,18 @@ namespace Prophet {
                 return;
             }
 
+            // The default settings
             if(!PartySettings.Instance.PartyLeader && !PartySettings.Instance.PartyMember) {
                 return;
             }
 
+            // If the user is a retard and set both to true
             if(PartySettings.Instance.PartyLeader && PartySettings.Instance.PartyMember) {
                 CustomNormalLog("You can't be both the party leader and a party member.");
                 return;
             }
 
+            // If the user is the party leader
             if(PartySettings.Instance.PartyLeader) {
                 if(!PartyMemberExists()) {
                     CustomNormalLog("You have to provide at least one party member name.");
@@ -111,12 +114,18 @@ namespace Prophet {
                 NumFriends = BNGetNumFriends();
             }
 
+            // If the user is the party member
             if(PartySettings.Instance.PartyMember) {
                 if(!PartyLeaderExists()) {
                     CustomNormalLog("You have to provide the party leader name.");
                     return;
                 }
 
+                if(!Me.GroupInfo.IsInParty) {
+                    return;
+                }
+
+                
             }
         }
 
@@ -132,9 +141,6 @@ namespace Prophet {
             var errorMessage = args.Args[0].ToString();
 
             var errGroupFull = Lua.GetReturnVal<string>("return ERR_GROUP_FULL", 0); // "Your party is full."
-            var joinedParty = Lua.GetReturnVal<string>("return JOINED_PARTY", 0); // "%s joins the party."
-            var leftParty = Lua.GetReturnVal<string>("return LEFT_PARTY", 0); // "%s leaves the party."
-            var notInGroup = Lua.GetReturnVal<string>("return NOT_IN_GROUP", 0); // "You are no longer in a party."
             var errInvitedAlreadyInGroup = Lua.GetReturnVal<string>("return ERR_INVITED_ALREADY_IN_GROUP_SS", 0); // "|Hplayer:%s|h[%s]|h invited you to a group, but you could not accept because you are already in a group."
             var errInvitedToGroup = Lua.GetReturnVal<string>("return ERR_INVITED_TO_GROUP_SS", 0); // "|Hplayer:%s|h[%s]|h has invited you to join a group."
             var errInvitePlayer = Lua.GetReturnVal<string>("return ERR_INVITE_PLAYER_S", 0); // "You have invited %s to join your group."
@@ -142,12 +148,6 @@ namespace Prophet {
             var errInviteSelf = Lua.GetReturnVal<string>("return ERR_INVITE_SELF", 0); // "You can't invite yourself to a group."
 
             if(errorMessage.Equals(errGroupFull)) {
-                CustomNormalLog("");
-            } else if(errorMessage.Equals(joinedParty)) {
-                CustomNormalLog("");
-            } else if(errorMessage.Equals(leftParty)) {
-                CustomNormalLog("");
-            } else if(errorMessage.Equals(notInGroup)) {
                 CustomNormalLog("");
             } else if(errorMessage.Equals(errInvitedAlreadyInGroup)) {
                 CustomNormalLog("");
@@ -166,8 +166,8 @@ namespace Prophet {
             return Me.IsValid && StyxWoW.IsInGame;
         }
 
-        public static int ShouldHavePartyMemberAmount() {
-            var count = 1;
+        public static int ExpectedPartyMemberCount() {
+            var count = 0;
             if(PartySettings.Instance.PartyMemberName1 != "") { count++; }
             if(PartySettings.Instance.PartyMemberName2 != "") { count++; }
             if(PartySettings.Instance.PartyMemberName3 != "") { count++; }
@@ -231,45 +231,52 @@ namespace Prophet {
         }
 
         public static void SendOutInvites() {
-            if(PartyMembers < ShouldHavePartyMemberAmount()) {
+            if(PartyMembers < ExpectedPartyMemberCount()) {
                 // Now we should invite members.
             }
         }
 
         public static void AcceptInvite() {
+            CustomNormalLog("Accepted invite.");
             Lua.DoString("AcceptGroup()");
-            Lua.DoString("StaticPopup_Hide('PARTY_INVITE')");
         }
 
         public static void DeclineInvite() {
+            CustomNormalLog("Declined invite.");
             Lua.DoString("DeclineGroup()");
+
+            // If there is a popup visible, get rid of that shit
+            var partyInvitePopup = Lua.GetReturnVal<bool>("return StaticPopup_Visible('PARTY_INVITE')", 0);
+            var partyInviteCrossrealmPopup = Lua.GetReturnVal<bool>("return StaticPopup_Visible('PARTY_INVITE_XREALM')", 0);
+
+            if(!partyInvitePopup && !partyInviteCrossrealmPopup) {
+                return;
+            }
+
             Lua.DoString("StaticPopup_Hide('PARTY_INVITE')");
+            Lua.DoString("StaticPopup_Hide('PARTY_INVITE_XREALM')");
         }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
             if(PartySettings.Instance.PartyLeader) { return; }
-            if(Me.GroupInfo.IsInParty) {
-                return;
-            }
             
-            // Arg 1 is the party leader name
-            var inviteRequest = args.Args[0].ToString();
+            var partyInviteSender = args.Args[0].ToString();
 
-            if(inviteRequest == PartySettings.Instance.PartyLeaderName) {
-                CustomNormalLog("We got an invite from the designated party leader, accepting.");
+            CustomNormalLog("We got an invite from " + partyInviteSender + ".");
+
+            if(partyInviteSender == PartySettings.Instance.PartyLeaderName) {
                 AcceptInvite();
             } else {
-                CustomNormalLog("We got an invite from some random stranger, declining.");
                 DeclineInvite();
             }
         }
 
         public static void HandlePartyMembersChanged(object sender, LuaEventArgs args) {
-            if(!PartySettings.Instance.PartyLeader) {
-                return;
-            }
+            var eventHappened = args.Args[0].ToString();
 
-            PartyMembers = GetNumGroupMembers();
+            CustomNormalLog("Event happened = " + eventHappened);
+
+            //PartyMembers = GetNumGroupMembers();
         }
 
         // ===========================================================
