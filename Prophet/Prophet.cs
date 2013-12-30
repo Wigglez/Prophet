@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 using Styx;
 using Styx.Common;
-using Styx.CommonBot;
 using Styx.Plugins;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
@@ -21,9 +19,9 @@ namespace Prophet {
         // ===========================================================
 
         public static LocalPlayer Me = StyxWoW.Me;
-        
+
         public static int PartyMembers = 0;
-        
+
         // ===========================================================
         // Constructors
         // ===========================================================
@@ -45,7 +43,7 @@ namespace Prophet {
         }
 
         public override string Author {
-            get { return "Wigglez"; }
+            get { return "Akna & Wigglez"; }
         }
 
         public override Version Version {
@@ -111,21 +109,14 @@ namespace Prophet {
                     return;
                 }
 
-                NumFriends = BNGetNumFriends();
+                SendOutInvites();
             }
 
             // If the user is the party member
-            if(PartySettings.Instance.PartyMember) {
-                if(!PartyLeaderExists()) {
-                    CustomNormalLog("You have to provide the party leader name.");
-                    return;
-                }
+            if(!PartySettings.Instance.PartyMember) return;
 
-                if(!Me.GroupInfo.IsInParty) {
-                    return;
-                }
-
-                
+            if(!PartyLeaderExists()) {
+                CustomNormalLog("You have to provide the party leader name.");
             }
         }
 
@@ -166,15 +157,6 @@ namespace Prophet {
             return Me.IsValid && StyxWoW.IsInGame;
         }
 
-        public static int ExpectedPartyMemberCount() {
-            var count = 0;
-            if(PartySettings.Instance.PartyMemberName1 != "") { count++; }
-            if(PartySettings.Instance.PartyMemberName2 != "") { count++; }
-            if(PartySettings.Instance.PartyMemberName3 != "") { count++; }
-            if(PartySettings.Instance.PartyMemberName4 != "") { count++; }
-            return count;
-        }
-
         public static bool PartyMemberExists() {
             return PartySettings.Instance.PartyMemberName1 != "" || PartySettings.Instance.PartyMemberName2 != "" || PartySettings.Instance.PartyMemberName3 != "" || PartySettings.Instance.PartyMemberName4 != "";
         }
@@ -184,7 +166,7 @@ namespace Prophet {
         }
 
         public static int GetNumGroupMembers() {
-            return Lua.GetReturnVal<int>("return GetNumGroupMembers()", 0);
+            return StyxWoW.Me.GroupInfo.RaidMembers.Count();
         }
 
         public static int BNGetNumFriends() {
@@ -227,12 +209,60 @@ namespace Prophet {
         }
 
         public static void LeaveParty() {
+            if(!PartySettings.Instance.PartyMember) return;
 
+            if(!GroupMemberExist(PartySettings.Instance.PartyLeaderName)) {
+                CustomNormalLog(string.Format("Party leader {0} isn't in group, leaving group.", PartySettings.Instance.PartyLeaderName));
+                // LeaveParty
+            }
+        }
+
+        public static bool GroupMemberExist(string name) {
+            if(GetNumGroupMembers() <= 1) return false;
+
+            for(var i = 1; i <= GetNumGroupMembers(); i++) {
+                if(Lua.GetReturnVal<string>(string.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0) == name) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool CheckInvites(string name) {
+            return name != "" && !GroupMemberExist(name);
         }
 
         public static void SendOutInvites() {
-            if(PartyMembers < ExpectedPartyMemberCount()) {
-                // Now we should invite members.
+            if(!PartySettings.Instance.PartyLeader) { return; }
+
+            if(CheckInvites(PartySettings.Instance.PartyMemberName1)) {
+                var charName = PartySettings.Instance.PartyMemberName1;
+                var realmName = Me.RealmName;
+
+                // No idea if this works until we can test it, but I guess it should.
+                if(PartySettings.Instance.PartyMemberName1.Contains("-")) {
+                    var index = PartySettings.Instance.PartyMemberName1.IndexOf('-');
+                    charName = PartySettings.Instance.PartyMemberName1.Substring(0, index - 1);
+                    realmName = PartySettings.Instance.PartyMemberName1.Substring(index);
+                }
+
+                if(BNCanInvite(charName, realmName)) {
+                    // Make a timer to not spam invite on every pulse but rather wait a while before sending it again.
+                    BNInviteFriend();
+                }
+            }
+
+            if(CheckInvites(PartySettings.Instance.PartyMemberName2)) {
+                // copy above if it works
+            }
+
+            if(CheckInvites(PartySettings.Instance.PartyMemberName3)) {
+                // copy above if it works
+            }
+
+            if(CheckInvites(PartySettings.Instance.PartyMemberName4)) {
+                // copy above if it works
             }
         }
 
@@ -258,8 +288,8 @@ namespace Prophet {
         }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
-            if(PartySettings.Instance.PartyLeader) { return; }
-            
+            if(PartySettings.Instance.PartyLeader) { DeclineInvite(); }
+
             var partyInviteSender = args.Args[0].ToString();
 
             CustomNormalLog("We got an invite from " + partyInviteSender + ".");
@@ -276,7 +306,7 @@ namespace Prophet {
 
             CustomNormalLog("Event happened = " + eventHappened);
 
-            //PartyMembers = GetNumGroupMembers();
+            LeaveParty();
         }
 
         // ===========================================================
