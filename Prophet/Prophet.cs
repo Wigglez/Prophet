@@ -209,12 +209,12 @@ namespace Prophet {
         }
 
         public static void LeaveParty() {
-            if(!PartySettings.Instance.PartyMember) return;
+            if(!PartySettings.Instance.PartyMember) { return; }
 
-            if(!GroupMemberExist(PartySettings.Instance.PartyLeaderName)) {
-                CustomNormalLog(string.Format("Party leader {0} isn't in group, leaving group.", PartySettings.Instance.PartyLeaderName));
-                // LeaveParty
-            }
+            if(GroupMemberExist(PartySettings.Instance.PartyLeaderName)) { return; }
+
+            CustomNormalLog(string.Format("Party leader {0} isn't in group, leaving group.", PartySettings.Instance.PartyLeaderName));
+            Lua.DoString("LeaveParty()");
         }
 
         public static bool GroupMemberExist(string name) {
@@ -237,32 +237,91 @@ namespace Prophet {
             if(!PartySettings.Instance.PartyLeader) { return; }
 
             if(CheckInvites(PartySettings.Instance.PartyMemberName1)) {
-                var charName = PartySettings.Instance.PartyMemberName1;
+                var toonName = PartySettings.Instance.PartyMemberName1;
                 var realmName = Me.RealmName;
+                CustomNormalLog("PartyMemberName1 toonName = " + toonName);
+                CustomNormalLog("PartyMemberName1 realmName = " + realmName);
 
                 // No idea if this works until we can test it, but I guess it should.
                 if(PartySettings.Instance.PartyMemberName1.Contains("-")) {
                     var index = PartySettings.Instance.PartyMemberName1.IndexOf('-');
-                    charName = PartySettings.Instance.PartyMemberName1.Substring(0, index - 1);
+                    toonName = PartySettings.Instance.PartyMemberName1.Substring(0, index - 1);
                     realmName = PartySettings.Instance.PartyMemberName1.Substring(index);
+                    CustomNormalLog("PartyMemberName1 contained a -");
+                    CustomNormalLog("toonName = " + toonName);
+                    CustomNormalLog("realmName = " + realmName);
                 }
 
-                if(BNCanInvite(charName, realmName)) {
+                if(BNCanInvite(toonName, realmName)) {
                     // Make a timer to not spam invite on every pulse but rather wait a while before sending it again.
                     BNInviteFriend();
                 }
             }
 
             if(CheckInvites(PartySettings.Instance.PartyMemberName2)) {
-                // copy above if it works
+                var toonName = PartySettings.Instance.PartyMemberName2;
+                var realmName = Me.RealmName;
+                CustomNormalLog("PartyMemberName2 toonName = " + toonName);
+                CustomNormalLog("PartyMemberName2 realmName = " + realmName);
+
+                // No idea if this works until we can test it, but I guess it should.
+                if(PartySettings.Instance.PartyMemberName2.Contains("-")) {
+                    var index = PartySettings.Instance.PartyMemberName2.IndexOf('-');
+                    toonName = PartySettings.Instance.PartyMemberName2.Substring(0, index - 1);
+                    realmName = PartySettings.Instance.PartyMemberName2.Substring(index);
+                    CustomNormalLog("PartyMemberName2 contained a - so who to invite is :");
+                    CustomNormalLog("toonName = " + toonName);
+                    CustomNormalLog("realmName = " + realmName);
+                }
+                if(BNCanInvite(toonName, realmName)) {
+                    // Make a timer to not spam invite on every pulse but rather wait a while before sending it again.
+                    BNInviteFriend();
+                }
+
             }
 
             if(CheckInvites(PartySettings.Instance.PartyMemberName3)) {
-                // copy above if it works
+                var toonName = PartySettings.Instance.PartyMemberName3;
+                var realmName = Me.RealmName;
+                CustomNormalLog("PartyMemberName3 toonName = " + toonName);
+                CustomNormalLog("PartyMemberName3 realmName = " + realmName);
+
+                // No idea if this works until we can test it, but I guess it should.
+                if(PartySettings.Instance.PartyMemberName3.Contains("-")) {
+                    var index = PartySettings.Instance.PartyMemberName3.IndexOf('-');
+                    toonName = PartySettings.Instance.PartyMemberName3.Substring(0, index - 1);
+                    realmName = PartySettings.Instance.PartyMemberName3.Substring(index);
+                    CustomNormalLog("PartyMemberName3 contained a -");
+                    CustomNormalLog("toonName = " + toonName);
+                    CustomNormalLog("realmName = " + realmName);
+                }
+
+                if(BNCanInvite(toonName, realmName)) {
+                    // Make a timer to not spam invite on every pulse but rather wait a while before sending it again.
+                    BNInviteFriend();
+                }
             }
 
             if(CheckInvites(PartySettings.Instance.PartyMemberName4)) {
-                // copy above if it works
+                var toonName = PartySettings.Instance.PartyMemberName4;
+                var realmName = Me.RealmName;
+                CustomNormalLog("PartyMemberName4 toonName = " + toonName);
+                CustomNormalLog("PartyMemberName4 realmName = " + realmName);
+
+                // No idea if this works until we can test it, but I guess it should.
+                if(PartySettings.Instance.PartyMemberName4.Contains("-")) {
+                    var index = PartySettings.Instance.PartyMemberName4.IndexOf('-');
+                    toonName = PartySettings.Instance.PartyMemberName4.Substring(0, index - 1);
+                    realmName = PartySettings.Instance.PartyMemberName4.Substring(index);
+                    CustomNormalLog("PartyMemberName4 contained a -");
+                    CustomNormalLog("toonName = " + toonName);
+                    CustomNormalLog("realmName = " + realmName);
+                }
+
+                if(BNCanInvite(toonName, realmName)) {
+                    // Make a timer to not spam invite on every pulse but rather wait a while before sending it again.
+                    BNInviteFriend();
+                }
             }
         }
 
@@ -288,7 +347,10 @@ namespace Prophet {
         }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
-            if(PartySettings.Instance.PartyLeader) { DeclineInvite(); }
+            if(PartySettings.Instance.PartyLeader) {
+                DeclineInvite();
+                return;
+            }
 
             var partyInviteSender = args.Args[0].ToString();
 
