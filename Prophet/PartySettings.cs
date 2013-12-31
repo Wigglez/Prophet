@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using Styx;
 using Styx.Common;
@@ -6,7 +7,7 @@ using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
 namespace Prophet {
-    public class PartySettings : Settings {
+    public class PartySettings {
 
         // ===========================================================
         // Constants
@@ -16,74 +17,53 @@ namespace Prophet {
         // Fields
         // ===========================================================
 
-        private static PartySettings _instance;
+        public static PartySettings Instance = new PartySettings();
+
+        private string _partyClassification = "None";
+        private string _loot = "Group Loot";
+        private string _lootThreshold = "Uncommon";
+        private string _passOnLoot = "No";
+        private string _setRole = "None";
 
         // ===========================================================
         // Constructors
         // ===========================================================
-        public PartySettings()
-            : base(Path.Combine(Path.Combine(Utilities.AssemblyDirectory, "Settings"), string.Format(@"Settings\{0}\{1}\{2}.xml", StyxWoW.Me.Name, "Prophet", "PartySettings"))) {
+
+        static PartySettings() {
+            var folderPath = Path.GetDirectoryName(SettingsFilePath);
+
+            if(folderPath != null && !Directory.Exists(folderPath)) {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            Load();
         }
 
         // ===========================================================
         // Getter & Setter
         // ===========================================================
 
-        public static PartySettings Instance { get { return _instance ?? (_instance = new PartySettings()); } }
+        public static string SettingsFilePath {
+            get { return Path.Combine(Utilities.AssemblyDirectory, string.Format(@"Settings\{0}\{1}-{2}\{3}.xml", "Prophet", StyxWoW.Me.Name, StyxWoW.Me.RealmName, "PartySettings")); }
+        }
 
-        // Party classification shit
-        [Setting]
-        [DefaultValue(false)]
-        [Category("1). Party Classification")]
-        [DisplayName("This character is the party leader")]
-        [Description("Toggles if this character should be the leader of the party.")]
-        public bool PartyLeader { get; set; }
-
-        [Setting]
-        [DefaultValue(false)]
-        [Category("1). Party Classification")]
-        [DisplayName("This character is a party member")]
-        [Description("Toggles if this character should be a party member.")]
-        public bool PartyMember { get; set; }
-
+        // Classification shit
+        public string PartyClassification { get { return _partyClassification; } set { _partyClassification = value; } }
 
         // Party leader shit
-        [Setting]
-        [DefaultValue("")]
-        [Category("2). Party Leader")]
-        [DisplayName("Party member 1 name")]
-        [Description("The character name of party member 1. To make this valid for cross-realm invites, use Name-Server. Ex: Gordonramsay-Sen'jin")]
         public string PartyMemberName1 { get; set; }
-
-        [Setting]
-        [DefaultValue("")]
-        [Category("2). Party Leader")]
-        [DisplayName("Party member 2 name")]
-        [Description("The character name of party member 2. To make this valid for cross-realm invites, use Name-Server. Ex: Gordonramsay-Sen'jin")]
         public string PartyMemberName2 { get; set; }
-
-        [Setting]
-        [DefaultValue("")]
-        [Category("2). Party Leader")]
-        [DisplayName("Party member 3 name")]
-        [Description("The character name of party member 3. To make this valid for cross-realm invites, use Name-Server. Ex: Gordonramsay-Sen'jin")]
         public string PartyMemberName3 { get; set; }
-
-        [Setting]
-        [DefaultValue("")]
-        [Category("2). Party Leader")]
-        [DisplayName("Party member 4 name")]
-        [Description("The character name of party member 4. To make this valid for cross-realm invites, use Name-Server. Ex: Gordonramsay-Sen'jin")]
         public string PartyMemberName4 { get; set; }
 
-
         // Party member shit
-        [Setting]
-        [DefaultValue("")]
-        [Category("2). Party Member")]
-        [DisplayName("Party leader name")]
-        [Description("The character name of your party leader. This is the only character you will accept invites from.")]
         public string PartyLeaderName { get; set; }
+
+        // Privileges shit
+        public string Loot { get { return _loot; } set { _loot = value; } }
+        public string LootThreshold { get { return _lootThreshold; } set { _lootThreshold = value; }}
+        public string PassOnLoot { get { return _passOnLoot; } set { _passOnLoot = value; } }
+        public string SetRole { get { return _setRole; } set { _setRole = value; } }
 
         // ===========================================================
         // Methods for/from SuperClass/Interfaces
@@ -92,6 +72,18 @@ namespace Prophet {
         // ===========================================================
         // Methods
         // ===========================================================
+
+        public static void Load() {
+            try {
+                Instance = ObjectXMLSerializer<PartySettings>.Load(SettingsFilePath);
+            } catch(Exception) {
+                Instance = new PartySettings();
+            }
+        }
+
+        public static void Save() {
+            ObjectXMLSerializer<PartySettings>.Save(Instance, SettingsFilePath);
+        }
 
         // ===========================================================
         // Inner and Anonymous Classes

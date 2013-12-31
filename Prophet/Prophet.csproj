@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Prophet</RootNamespace>
     <AssemblyName>Prophet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Honorbuddy">
-      <HintPath>D:\Program\HB Dev\Honorbuddy.exe</HintPath>
+      <HintPath>D:\Games\Bots\Honorbuddy\HB DEVELOPMENT 2\Honorbuddy.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -45,11 +46,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Tripper.Tools">
-      <HintPath>D:\Program\HB Dev\Tripper.Tools.dll</HintPath>
+      <HintPath>D:\Games\Bots\Honorbuddy\HB DEVELOPMENT 2\Tripper.Tools.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectXMLSerializer.cs" />
+    <Compile Include="PartyLeader.cs" />
+    <Compile Include="PartyMember.cs" />
     <Compile Include="PartySettings.cs" />
     <Compile Include="Prophet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,6 +70,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "$(HBPLUGINDIR)\500.dll"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
