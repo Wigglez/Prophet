@@ -219,6 +219,70 @@ namespace Prophet {
             Lua.DoString(String.Format("BNInviteFriend({0})", PresenceID));
         }
 
+        // method, partyMaster, raidMaster
+        public static List<string> GetLootMethod() {
+            return Lua.GetReturnValues("return GetLootMethod()");
+        } 
+
+        public static void SetLootMethod(string method) {
+            /*
+             * freeforall - Free for All - any group member can take any loot at any time
+             * group - Group Loot - like Round Robin, but items above a quality threshold are rolled on
+             * master - Master Looter - like Round Robin, but items above a quality threshold are left for a designated loot master to
+             * needbeforegreed - Need before Greed - like Group Loot, but members automatically pass on items
+             * roundrobin - Round Robin - group members take turns being able to loot
+             */
+            Lua.DoString(String.Format("SetLootMethod({0}, 'player')", method)); 
+        }
+
+        public static int GetLootThreshold() {
+            return Lua.GetReturnVal<int>("return GetLootThreshold()", 0);
+        }
+
+        public static void SetLootThreshold(int threshold) {
+            /*
+             * 0. Poor (gray)
+             * 1. Common (white)
+             * 2. Uncommon (green)
+             * 3. Rare / Superior (blue)
+             * 4. Epic (purple)
+             * 5. Legendary (orange)
+             * 6. Artifact (golden yellow)
+             * 7. Heirloom (light yellow)
+             */
+            Lua.DoString(String.Format("SetLootThreshold({0})", threshold));   
+        }
+
+        public static int GetOptOutOfLoot() {
+            // Returns 1 if opted out, otherwise nil
+            return Lua.GetReturnVal<int>("return GetOptOutOfLoot()", 0);
+        }
+
+        public static void SetOptOutOfLoot(bool enable) {
+            // True to opt out, false to participate in loot rolls
+            Lua.DoString(String.Format("SetOptOutOfLoot({0})", enable));
+        }
+
+        public static string UnitGroupRoleAssigned() {
+            /*
+             * DAMAGER
+             * HEALER
+             * NONE
+             * TANK
+             */
+            return Lua.GetReturnVal<string>("return UnitGroupRolesAssigned('player')", 0);
+        }
+
+        public static void UnitSetRole(string role) {
+            /*
+             * DAMAGER
+             * HEALER
+             * NONE
+             * TANK
+             */
+            Lua.DoString(String.Format("UnitSetRole('player', {0})", role));   
+        }
+
         // ===========================================================
         // Inner and Anonymous Classes
         // ===========================================================
