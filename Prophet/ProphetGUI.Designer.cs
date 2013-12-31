@@ -198,7 +198,7 @@
             this.partyMemberGroupBox.Controls.Add(this.partyLeaderTextBox);
             this.partyMemberGroupBox.Controls.Add(this.partyLeaderLabel);
             this.partyMemberGroupBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.partyMemberGroupBox.Location = new System.Drawing.Point(321, 71);
+            this.partyMemberGroupBox.Location = new System.Drawing.Point(2, 71);
             this.partyMemberGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.partyMemberGroupBox.Name = "partyMemberGroupBox";
             this.partyMemberGroupBox.Padding = new System.Windows.Forms.Padding(4);
@@ -350,7 +350,7 @@
             this.partyMemberPrivilegesGroupBox.Controls.Add(this.partyMemberSetRoleComboBox);
             this.partyMemberPrivilegesGroupBox.Controls.Add(this.partyMemberPassOnLootComboBox);
             this.partyMemberPrivilegesGroupBox.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.partyMemberPrivilegesGroupBox.Location = new System.Drawing.Point(321, 139);
+            this.partyMemberPrivilegesGroupBox.Location = new System.Drawing.Point(2, 139);
             this.partyMemberPrivilegesGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.partyMemberPrivilegesGroupBox.Name = "partyMemberPrivilegesGroupBox";
             this.partyMemberPrivilegesGroupBox.Padding = new System.Windows.Forms.Padding(4);

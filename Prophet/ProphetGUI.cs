@@ -18,6 +18,24 @@ namespace Prophet {
             partyMember3TextBox.Text = PartySettings.Instance.PartyMemberName3;
             partyMember4TextBox.Text = PartySettings.Instance.PartyMemberName4;
 
+            if(partyMember1TextBox.Text == "") {
+                partyMember2Label.Visible = false;
+                partyMember2TextBox.Visible = false;
+                partyMember2TextBox.Text = "";
+            }
+
+            if(partyMember2TextBox.Text == "") {
+                partyMember3Label.Visible = false;
+                partyMember3TextBox.Visible = false;
+                partyMember3TextBox.Text = "";
+            }
+
+            if(partyMember3TextBox.Text == "") {
+                partyMember4Label.Visible = false;
+                partyMember4TextBox.Visible = false;
+                partyMember4TextBox.Text = "";
+            }
+
             // Party Member
             partyLeaderTextBox.Text = PartySettings.Instance.PartyLeaderName;
 
@@ -64,16 +82,43 @@ namespace Prophet {
 
         // Party Leader
         private void partyMember1TextBox_TextChanged(object sender, EventArgs e) {
+            if(partyMember1TextBox.Text == "") {
+                partyMember2Label.Visible = false;
+                partyMember2TextBox.Visible = false;
+                partyMember2TextBox.Text = "";
+            } else {
+                partyMember2Label.Visible = true;
+                partyMember2TextBox.Visible = true;
+            }
+
             PartySettings.Instance.PartyMemberName1 = partyMember1TextBox.Text;
             PartySettings.Save();
         }
 
         private void partyMember2TextBox_TextChanged(object sender, EventArgs e) {
+            if(partyMember2TextBox.Text == "") {
+                partyMember3Label.Visible = false;
+                partyMember3TextBox.Visible = false;
+                partyMember3TextBox.Text = "";
+            } else {
+                partyMember3Label.Visible = true;
+                partyMember3TextBox.Visible = true;
+            }
+
             PartySettings.Instance.PartyMemberName2 = partyMember2TextBox.Text;
             PartySettings.Save();
         }
 
         private void partyMember3TextBox_TextChanged(object sender, EventArgs e) {
+            if(partyMember3TextBox.Text == "") {
+                partyMember4Label.Visible = false;
+                partyMember4TextBox.Visible = false;
+                partyMember4TextBox.Text = "";
+            } else {
+                partyMember4Label.Visible = true;
+                partyMember4TextBox.Visible = true;
+            }
+
             PartySettings.Instance.PartyMemberName3 = partyMember3TextBox.Text;
             PartySettings.Save();
         }
