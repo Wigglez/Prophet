@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Windows.Media;
 using Bots.DungeonBuddy.Helpers;
-using Styx;
 using Styx.Common;
 using Styx.Plugins;
 using Styx.WoWInternals;
-using Styx.WoWInternals.WoWObjects;
 
 namespace Prophet {
     public class Prophet : HBPlugin {
@@ -56,7 +54,6 @@ namespace Prophet {
 
         public override void OnEnable() {
             try {
-                CustomNormalLog("test enable");
                 Lua.Events.AttachEvent("PARTY_INVITE_REQUEST", HandlePartyInviteRequest);
                 base.OnEnable();
             } catch(Exception e) {
@@ -68,7 +65,6 @@ namespace Prophet {
 
         public override void OnDisable() {
             try {
-                CustomNormalLog("test disable");
                 Lua.Events.DetachEvent("PARTY_INVITE_REQUEST", HandlePartyInviteRequest);
                 base.OnDisable();
             } catch(Exception e) {

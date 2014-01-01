@@ -62,14 +62,13 @@ namespace Prophet {
         /// <param name="serializedFormat">XML serialized format used to load the object.</param>
         /// <returns>Object loaded from an XML file using the specified serialized format.</returns>
         public static T Load(string path, SerializedFormat serializedFormat) {
-            T serializableObject = null;
+            T serializableObject;
 
             switch(serializedFormat) {
                 case SerializedFormat.Binary:
                     serializableObject = LoadFromBinaryFormat(path, null);
                     break;
 
-                case SerializedFormat.Document:
                 default:
                     serializableObject = LoadFromDocumentFormat(null, path, null);
                     break;
@@ -89,7 +88,7 @@ namespace Prophet {
         /// <param name="path">Path of the file to load the object from.</param>
         /// <param name="extraTypes">Extra data types to enable deserialization of custom types within the object.</param>
         /// <returns>Object loaded from an XML file in Document format.</returns>
-        public static T Load(string path, System.Type[] extraTypes) {
+        public static T Load(string path, Type[] extraTypes) {
             T serializableObject = LoadFromDocumentFormat(extraTypes, path, null);
             return serializableObject;
         }
@@ -124,14 +123,13 @@ namespace Prophet {
         /// <returns>Object loaded from an XML file located in a specified isolated storage area, using a specified serialized format.</returns>
         public static T Load(string fileName, IsolatedStorageFile isolatedStorageDirectory,
                              SerializedFormat serializedFormat) {
-            T serializableObject = null;
+            T serializableObject;
 
             switch(serializedFormat) {
                 case SerializedFormat.Binary:
                     serializableObject = LoadFromBinaryFormat(fileName, isolatedStorageDirectory);
                     break;
 
-                case SerializedFormat.Document:
                 default:
                     serializableObject = LoadFromDocumentFormat(null, fileName, isolatedStorageDirectory);
                     break;
@@ -152,7 +150,7 @@ namespace Prophet {
         /// <param name="isolatedStorageDirectory">Isolated storage area directory containing the XML file to load the object from.</param>
         /// <param name="extraTypes">Extra data types to enable deserialization of custom types within the object.</param>
         /// <returns>Object loaded from an XML file located in a specified isolated storage area, using a specified serialized format.</returns>
-        public static T Load(string fileName, IsolatedStorageFile isolatedStorageDirectory, System.Type[] extraTypes) {
+        public static T Load(string fileName, IsolatedStorageFile isolatedStorageDirectory, Type[] extraTypes) {
             T serializableObject = LoadFromDocumentFormat(null, fileName, isolatedStorageDirectory);
             return serializableObject;
         }
@@ -196,7 +194,6 @@ namespace Prophet {
                     SaveToBinaryFormat(serializableObject, path, null);
                     break;
 
-                case SerializedFormat.Document:
                 default:
                     SaveToDocumentFormat(serializableObject, null, path, null);
                     break;
@@ -216,7 +213,7 @@ namespace Prophet {
         /// <param name="serializableObject">Serializable object to be saved to file.</param>
         /// <param name="path">Path of the file to save the object to.</param>
         /// <param name="extraTypes">Extra data types to enable serialization of custom types within the object.</param>
-        public static void Save(T serializableObject, string path, System.Type[] extraTypes) {
+        public static void Save(T serializableObject, string path, Type[] extraTypes) {
             SaveToDocumentFormat(serializableObject, extraTypes, path, null);
         }
 
@@ -258,7 +255,6 @@ namespace Prophet {
                     SaveToBinaryFormat(serializableObject, fileName, isolatedStorageDirectory);
                     break;
 
-                case SerializedFormat.Document:
                 default:
                     SaveToDocumentFormat(serializableObject, null, fileName, isolatedStorageDirectory);
                     break;
@@ -280,7 +276,7 @@ namespace Prophet {
         /// <param name="isolatedStorageDirectory">Isolated storage area directory containing the XML file to save the object to.</param>
         /// <param name="extraTypes">Extra data types to enable serialization of custom types within the object.</param>
         public static void Save(T serializableObject, string fileName, IsolatedStorageFile isolatedStorageDirectory,
-                                System.Type[] extraTypes) {
+                                Type[] extraTypes) {
             SaveToDocumentFormat(serializableObject, null, fileName, isolatedStorageDirectory);
         }
 
@@ -289,30 +285,25 @@ namespace Prophet {
         #region Private
 
         private static FileStream CreateFileStream(IsolatedStorageFile isolatedStorageFolder, string path) {
-            FileStream fileStream = null;
-
-            if(isolatedStorageFolder == null)
-                fileStream = new FileStream(path, FileMode.OpenOrCreate);
-            else
-                fileStream = new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isolatedStorageFolder);
+            FileStream fileStream = isolatedStorageFolder == null ? new FileStream(path, FileMode.OpenOrCreate) : new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isolatedStorageFolder);
 
             return fileStream;
         }
 
         private static T LoadFromBinaryFormat(string path, IsolatedStorageFile isolatedStorageFolder) {
-            T serializableObject = null;
+            T serializableObject;
 
             using(FileStream fileStream = CreateFileStream(isolatedStorageFolder, path)) {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                var binaryFormatter = new BinaryFormatter();
                 serializableObject = binaryFormatter.Deserialize(fileStream) as T;
             }
 
             return serializableObject;
         }
 
-        private static T LoadFromDocumentFormat(System.Type[] extraTypes, string path,
+        private static T LoadFromDocumentFormat(Type[] extraTypes, string path,
                                                 IsolatedStorageFile isolatedStorageFolder) {
-            T serializableObject = null;
+            T serializableObject;
 
             using(TextReader textReader = CreateTextReader(isolatedStorageFolder, path)) {
                 XmlSerializer xmlSerializer = CreateXmlSerializer(extraTypes);
@@ -324,42 +315,26 @@ namespace Prophet {
         }
 
         private static TextReader CreateTextReader(IsolatedStorageFile isolatedStorageFolder, string path) {
-            TextReader textReader = null;
-
-            if(isolatedStorageFolder == null)
-                textReader = new StreamReader(path);
-            else
-                textReader = new StreamReader(new IsolatedStorageFileStream(path, FileMode.Open, isolatedStorageFolder));
+            TextReader textReader = isolatedStorageFolder == null ? new StreamReader(path) : new StreamReader(new IsolatedStorageFileStream(path, FileMode.Open, isolatedStorageFolder));
 
             return textReader;
         }
 
         private static TextWriter CreateTextWriter(IsolatedStorageFile isolatedStorageFolder, string path) {
-            TextWriter textWriter = null;
-
-            if(isolatedStorageFolder == null)
-                textWriter = new StreamWriter(path);
-            else
-                textWriter =
-                    new StreamWriter(new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isolatedStorageFolder));
+            TextWriter textWriter = isolatedStorageFolder == null ? new StreamWriter(path) : new StreamWriter(new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isolatedStorageFolder));
 
             return textWriter;
         }
 
-        private static XmlSerializer CreateXmlSerializer(System.Type[] extraTypes) {
-            Type ObjectType = typeof(T);
+        private static XmlSerializer CreateXmlSerializer(Type[] extraTypes) {
+            Type objectType = typeof(T);
 
-            XmlSerializer xmlSerializer = null;
-
-            if(extraTypes != null)
-                xmlSerializer = new XmlSerializer(ObjectType, extraTypes);
-            else
-                xmlSerializer = new XmlSerializer(ObjectType);
+            XmlSerializer xmlSerializer = extraTypes != null ? new XmlSerializer(objectType, extraTypes) : new XmlSerializer(objectType);
 
             return xmlSerializer;
         }
 
-        private static void SaveToDocumentFormat(T serializableObject, System.Type[] extraTypes, string path,
+        private static void SaveToDocumentFormat(T serializableObject, Type[] extraTypes, string path,
                                                  IsolatedStorageFile isolatedStorageFolder) {
             using(TextWriter textWriter = CreateTextWriter(isolatedStorageFolder, path)) {
                 XmlSerializer xmlSerializer = CreateXmlSerializer(extraTypes);
@@ -370,7 +345,7 @@ namespace Prophet {
         private static void SaveToBinaryFormat(T serializableObject, string path,
                                                IsolatedStorageFile isolatedStorageFolder) {
             using(FileStream fileStream = CreateFileStream(isolatedStorageFolder, path)) {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                var binaryFormatter = new BinaryFormatter();
                 binaryFormatter.Serialize(fileStream, serializableObject);
             }
         }

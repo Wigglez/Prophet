@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using System.Net.Mail;
-using Bots.DungeonBuddy.Helpers;
 using Styx.WoWInternals;
 
 namespace Prophet {
