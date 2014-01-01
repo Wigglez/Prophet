@@ -39,6 +39,8 @@
             this.partyLeaderTextBox = new System.Windows.Forms.TextBox();
             this.partyLeaderLabel = new System.Windows.Forms.Label();
             this.PartyLeaderPrivilegesGroupBox = new System.Windows.Forms.GroupBox();
+            this.partyLeaderDungeonDifficultyLabel = new System.Windows.Forms.Label();
+            this.partyLeaderDungeonDifficultyComboBox = new System.Windows.Forms.ComboBox();
             this.partyLeaderSetRoleLabel = new System.Windows.Forms.Label();
             this.partyLeaderLootThresholdLabel = new System.Windows.Forms.Label();
             this.partyLeaderPassOnLootLabel = new System.Windows.Forms.Label();
@@ -52,8 +54,6 @@
             this.partyMemberPassOnLootLabel = new System.Windows.Forms.Label();
             this.partyMemberSetRoleComboBox = new System.Windows.Forms.ComboBox();
             this.partyMemberPassOnLootComboBox = new System.Windows.Forms.ComboBox();
-            this.partyLeaderDungeonDifficultyLabel = new System.Windows.Forms.Label();
-            this.partyLeaderDungeonDifficultyComboBox = new System.Windows.Forms.ComboBox();
             this.partyClassificationGroupBox.SuspendLayout();
             this.partyLeaderGroupBox.SuspendLayout();
             this.partyMemberGroupBox.SuspendLayout();
@@ -261,6 +261,31 @@
             this.PartyLeaderPrivilegesGroupBox.TabStop = false;
             this.PartyLeaderPrivilegesGroupBox.Text = "Party Leader Privileges";
             // 
+            // partyLeaderDungeonDifficultyLabel
+            // 
+            this.partyLeaderDungeonDifficultyLabel.AutoSize = true;
+            this.partyLeaderDungeonDifficultyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.partyLeaderDungeonDifficultyLabel.ForeColor = System.Drawing.Color.White;
+            this.partyLeaderDungeonDifficultyLabel.Location = new System.Drawing.Point(6, 80);
+            this.partyLeaderDungeonDifficultyLabel.Name = "partyLeaderDungeonDifficultyLabel";
+            this.partyLeaderDungeonDifficultyLabel.Size = new System.Drawing.Size(106, 15);
+            this.partyLeaderDungeonDifficultyLabel.TabIndex = 14;
+            this.partyLeaderDungeonDifficultyLabel.Text = "Dungeon Difficulty";
+            // 
+            // partyLeaderDungeonDifficultyComboBox
+            // 
+            this.partyLeaderDungeonDifficultyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.partyLeaderDungeonDifficultyComboBox.FormattingEnabled = true;
+            this.partyLeaderDungeonDifficultyComboBox.Items.AddRange(new object[] {
+            "5 Player Normal",
+            "5 Player Heroic",
+            "Challenge Mode"});
+            this.partyLeaderDungeonDifficultyComboBox.Location = new System.Drawing.Point(121, 77);
+            this.partyLeaderDungeonDifficultyComboBox.Name = "partyLeaderDungeonDifficultyComboBox";
+            this.partyLeaderDungeonDifficultyComboBox.Size = new System.Drawing.Size(162, 23);
+            this.partyLeaderDungeonDifficultyComboBox.TabIndex = 13;
+            this.partyLeaderDungeonDifficultyComboBox.SelectedValueChanged += new System.EventHandler(this.partyLeaderDungeonDifficultyComboBox_SelectedValueChanged);
+            // 
             // partyLeaderSetRoleLabel
             // 
             this.partyLeaderSetRoleLabel.AutoSize = true;
@@ -434,31 +459,6 @@
             this.partyMemberPassOnLootComboBox.TabIndex = 3;
             this.partyMemberPassOnLootComboBox.SelectedValueChanged += new System.EventHandler(this.partyMemberPassOnLootComboBox_SelectedValueChanged);
             // 
-            // partyLeaderDungeonDifficultyLabel
-            // 
-            this.partyLeaderDungeonDifficultyLabel.AutoSize = true;
-            this.partyLeaderDungeonDifficultyLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.partyLeaderDungeonDifficultyLabel.ForeColor = System.Drawing.Color.White;
-            this.partyLeaderDungeonDifficultyLabel.Location = new System.Drawing.Point(6, 80);
-            this.partyLeaderDungeonDifficultyLabel.Name = "partyLeaderDungeonDifficultyLabel";
-            this.partyLeaderDungeonDifficultyLabel.Size = new System.Drawing.Size(106, 15);
-            this.partyLeaderDungeonDifficultyLabel.TabIndex = 14;
-            this.partyLeaderDungeonDifficultyLabel.Text = "Dungeon Difficulty";
-            // 
-            // partyLeaderDungeonDifficultyComboBox
-            // 
-            this.partyLeaderDungeonDifficultyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.partyLeaderDungeonDifficultyComboBox.FormattingEnabled = true;
-            this.partyLeaderDungeonDifficultyComboBox.Items.AddRange(new object[] {
-            "5 Player Normal",
-            "5 Player Heroic",
-            "Challenge Mode"});
-            this.partyLeaderDungeonDifficultyComboBox.Location = new System.Drawing.Point(121, 77);
-            this.partyLeaderDungeonDifficultyComboBox.Name = "partyLeaderDungeonDifficultyComboBox";
-            this.partyLeaderDungeonDifficultyComboBox.Size = new System.Drawing.Size(162, 23);
-            this.partyLeaderDungeonDifficultyComboBox.TabIndex = 13;
-            this.partyLeaderDungeonDifficultyComboBox.SelectedValueChanged += new System.EventHandler(this.partyLeaderDungeonDifficultyComboBox_SelectedValueChanged);
-            // 
             // ProphetGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -478,10 +478,10 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 0);
+            this.MinimumSize = new System.Drawing.Size(300, 38);
             this.Name = "ProphetGUI";
             this.ShowIcon = false;
-            this.Text = "Prophet";
+            this.Text = "Prophet (Made by AknA and Wigglez)";
             this.Load += new System.EventHandler(this.ProphetGUI_Load);
             this.partyClassificationGroupBox.ResumeLayout(false);
             this.partyClassificationGroupBox.PerformLayout();

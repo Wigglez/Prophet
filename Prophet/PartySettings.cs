@@ -22,7 +22,7 @@ namespace Prophet {
         private string _lootThreshold = "Uncommon";
         private string _dungeonDifficulty = "5 Player Normal";
         private string _passOnLoot = "No";
-        private string _setRole = "None";
+        private string _setRole = "No Role";
 
         // ===========================================================
         // Constructors

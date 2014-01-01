@@ -46,6 +46,23 @@ namespace Prophet {
             HandleStaticPopup();
         }
 
+        public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
+            if(PartySettings.Instance.PartyClassification == "Party Leader") {
+                DeclineInvite();
+                return;
+            }
+
+            var partyInviteSender = args.Args[0].ToString();
+
+            Prophet.CustomNormalLog("We got an invite from " + partyInviteSender + ".");
+
+            if(partyInviteSender == PartySettings.Instance.PartyLeaderName) {
+                AcceptInvite();
+            } else {
+                DeclineInvite();
+            }
+        }
+
         public static void HandleStaticPopup() {
             // If there is a popup visible, get rid of that shit
             var partyInvitePopup = Lua.GetReturnVal<bool>("return StaticPopup_Visible('PARTY_INVITE')", 0);
@@ -268,7 +285,6 @@ namespace Prophet {
 
         public static void SetOptOutOfLoot(string optOut) {
             // True to opt out, false to participate in loot rolls
-            Prophet.CustomNormalLog("SetOptOutOfLoot = {0}", optOut);
             Lua.DoString(String.Format("SetOptOutOfLoot({0})", optOut));
         }
 
