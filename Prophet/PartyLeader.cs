@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Styx;
 using Styx.Helpers;
 using Styx.WoWInternals;
@@ -39,40 +40,9 @@ namespace Prophet {
         // Methods
         // ===========================================================
 
-        public static bool CanInvite() { return Prophet.Me.IsValid && StyxWoW.IsInGame; }
+        public static bool CanInvite() { return Character.Me.IsValid && StyxWoW.IsInGame; }
 
         public static bool Exists() { return PartySettings.Instance.PartyLeaderName != ""; }
-
-        public static bool GroupMemberExistsInParty(string name) {
-            if(GetNumGroupMembers() <= 1) { return false; }
-
-            var nameNoRealm = name;
-            var leaderRealm = Prophet.Me.RealmName;
-
-            if(name.Contains('-')) {
-                var index = name.IndexOf('-');
-                var toonRealm = name.Substring(index + 1);
-                //Prophet.CustomNormalLog("toonRealm = {0}", toonRealm);
-
-                if(leaderRealm == toonRealm) {
-                    nameNoRealm = name.Substring(0, index);
-                }
-            }
-
-            //Prophet.CustomNormalLog("GroupMemberExistsInParty: name = {0}", nameNoRealm);
-
-            for(var i = 1; i <= GetNumGroupMembers(); i++) {
-                var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
-
-                //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
-                if(raidRosterInfo == nameNoRealm) {
-                    //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public static int GetRequiredPartyCount() {
             var count = 0;
@@ -81,7 +51,7 @@ namespace Prophet {
                 if(PartySettings.Instance.PartyLeaderName.Contains('-')) {
                     PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName;
                 } else {
-                    PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName + '-' + Prophet.Me.RealmName;
+                    PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName + '-' + Character.Me.RealmName;
                 }
             }
 
@@ -89,7 +59,7 @@ namespace Prophet {
                 if(PartySettings.Instance.PartyMemberName1.Contains('-')) {
                     PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1;
                 } else {
-                    PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1 + '-' + Prophet.Me.RealmName;
+                    PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1 + '-' + Character.Me.RealmName;
                 }
 
                 count++;
@@ -99,7 +69,7 @@ namespace Prophet {
                 if(PartySettings.Instance.PartyMemberName2.Contains('-')) {
                     PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2;
                 } else {
-                    PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2 + '-' + Prophet.Me.RealmName;
+                    PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2 + '-' + Character.Me.RealmName;
                 }
 
                 count++;
@@ -109,7 +79,7 @@ namespace Prophet {
                 if(PartySettings.Instance.PartyMemberName3.Contains('-')) {
                     PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3;
                 } else {
-                    PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3 + '-' + Prophet.Me.RealmName;
+                    PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3 + '-' + Character.Me.RealmName;
                 }
 
                 count++;
@@ -119,7 +89,7 @@ namespace Prophet {
                 if(PartySettings.Instance.PartyMemberName4.Contains('-')) {
                     PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4;
                 } else {
-                    PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4 + '-' + Prophet.Me.RealmName;
+                    PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4 + '-' + Character.Me.RealmName;
                 }
 
                 count++;
@@ -129,15 +99,15 @@ namespace Prophet {
         }
 
         public static bool ShouldInvite(string name) {
-            return name != "" && !GroupMemberExistsInParty(name);
+            return name != "" && !Character.GroupMemberExistsInParty(name);
         }
 
         public static void SendOutInvites() {
             if(PartySettings.Instance.PartyClassification != "Party Leader") { return; }
 
             for(var i = 0; i < RequiredPartyCount; i++) {
-                if(Prophet.Me.GroupInfo.IsInParty) {
-                    if(GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
+                if(Character.Me.GroupInfo.IsInParty) {
+                    if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
                 }
                 
                 if(!ShouldInvite(PartyMember.Name[i])) { continue; }
@@ -165,10 +135,6 @@ namespace Prophet {
             }
         }
 
-        public static int GetNumGroupMembers() {
-            return StyxWoW.Me.GroupInfo.RaidMembers.Count();
-        }
-
         public static int BNGetNumFriends() {
             return Lua.GetReturnVal<int>("return BNGetNumFriends()", 0);
         }
@@ -189,26 +155,30 @@ namespace Prophet {
             //Prophet.CustomNormalLog("BNCanInvite: numFriends = {0}", numFriends);
 
             for(var i = 1; i <= numFriends; i++) {
-                var presenceID = BNGetFriendInfo(i)[0].ToInt32();
-                //Prophet.CustomNormalLog("BNCanInvite: presenceID = {0}", presenceID);
-                var currentClient = BNGetFriendInfo(i)[6];
-                var isOnline = currentClient == "WoW";
-                //Prophet.CustomNormalLog("BNCanInvite: isOnline = {0}", isOnline);
+                try {
+                    var presenceID = BNGetFriendInfo(i)[0].ToInt32();
+                    //Prophet.CustomNormalLog("BNCanInvite: presenceID = {0}", presenceID);
+                    var currentClient = BNGetFriendInfo(i)[6];
+                    var isOnline = currentClient == "WoW";
+                    //Prophet.CustomNormalLog("BNCanInvite: isOnline = {0}", isOnline);
 
-                var toonName = BNGetToonInfo(presenceID)[1];
-                //Prophet.CustomNormalLog("BNCanInvite: toonName = {0}", toonName);
-                var realmName = BNGetToonInfo(presenceID)[3];
-                //Prophet.CustomNormalLog("BNCanInvite: realmName = {0}", realmName);
+                    var toonName = BNGetToonInfo(presenceID)[1];
+                    //Prophet.CustomNormalLog("BNCanInvite: toonName = {0}", toonName);
+                    var realmName = BNGetToonInfo(presenceID)[3];
+                    //Prophet.CustomNormalLog("BNCanInvite: realmName = {0}", realmName);
 
-                var combinedName = toonName + "-" + realmName;
-                //Prophet.CustomNormalLog("BNCanInvite: combinedName = {0}", combinedName);
+                    var combinedName = toonName + "-" + realmName;
+                    //Prophet.CustomNormalLog("BNCanInvite: combinedName = {0}", combinedName);
 
-                if(combinedName != nameAndRealm || !isOnline) {
-                    continue;
+                    if(combinedName != nameAndRealm || !isOnline) {
+                        continue;
+                    }
+
+                    PresenceID = presenceID;
+                    return true;
+                } catch(Exception e) {
+                    Prophet.CustomDiagnosticLog("Exception = {0}, Stacktrace = {1}", e, e.StackTrace);
                 }
-
-                PresenceID = presenceID;
-                return true;
             }
 
             return false;
@@ -216,70 +186,6 @@ namespace Prophet {
 
         public static void BNInviteFriend() {
             Lua.DoString(String.Format("BNInviteFriend({0})", PresenceID));
-        }
-
-        // method, partyMaster, raidMaster
-        public static List<string> GetLootMethod() {
-            return Lua.GetReturnValues("return GetLootMethod()");
-        } 
-
-        public static void SetLootMethod(string method) {
-            /*
-             * freeforall - Free for All - any group member can take any loot at any time
-             * group - Group Loot - like Round Robin, but items above a quality threshold are rolled on
-             * master - Master Looter - like Round Robin, but items above a quality threshold are left for a designated loot master to
-             * needbeforegreed - Need before Greed - like Group Loot, but members automatically pass on items
-             * roundrobin - Round Robin - group members take turns being able to loot
-             */
-            Lua.DoString(String.Format("SetLootMethod({0}, 'player')", method)); 
-        }
-
-        public static int GetLootThreshold() {
-            return Lua.GetReturnVal<int>("return GetLootThreshold()", 0);
-        }
-
-        public static void SetLootThreshold(int threshold) {
-            /*
-             * 0. Poor (gray)
-             * 1. Common (white)
-             * 2. Uncommon (green)
-             * 3. Rare / Superior (blue)
-             * 4. Epic (purple)
-             * 5. Legendary (orange)
-             * 6. Artifact (golden yellow)
-             * 7. Heirloom (light yellow)
-             */
-            Lua.DoString(String.Format("SetLootThreshold({0})", threshold));   
-        }
-
-        public static int GetOptOutOfLoot() {
-            // Returns 1 if opted out, otherwise nil
-            return Lua.GetReturnVal<int>("return GetOptOutOfLoot()", 0);
-        }
-
-        public static void SetOptOutOfLoot(bool enable) {
-            // True to opt out, false to participate in loot rolls
-            Lua.DoString(String.Format("SetOptOutOfLoot({0})", enable));
-        }
-
-        public static string UnitGroupRoleAssigned() {
-            /*
-             * DAMAGER
-             * HEALER
-             * NONE
-             * TANK
-             */
-            return Lua.GetReturnVal<string>("return UnitGroupRolesAssigned('player')", 0);
-        }
-
-        public static void UnitSetRole(string role) {
-            /*
-             * DAMAGER
-             * HEALER
-             * NONE
-             * TANK
-             */
-            Lua.DoString(String.Format("UnitSetRole('player', {0})", role));   
         }
 
         // ===========================================================

@@ -20,6 +20,7 @@ namespace Prophet {
         private string _partyClassification = "None";
         private string _loot = "Group Loot";
         private string _lootThreshold = "Uncommon";
+        private string _dungeonDifficulty = "5 Player Normal";
         private string _passOnLoot = "No";
         private string _setRole = "None";
 
@@ -60,6 +61,7 @@ namespace Prophet {
         // Privileges shit
         public string Loot { get { return _loot; } set { _loot = value; } }
         public string LootThreshold { get { return _lootThreshold; } set { _lootThreshold = value; }}
+        public string DungeonDifficulty { get { return _dungeonDifficulty; } set { _dungeonDifficulty = value; } }
         public string PassOnLoot { get { return _passOnLoot; } set { _passOnLoot = value; } }
         public string SetRole { get { return _setRole; } set { _setRole = value; } }
 

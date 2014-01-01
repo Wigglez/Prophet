@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using Bots.DungeonBuddy.Helpers;
 using Styx;
 using Styx.Common;
 using Styx.Plugins;
@@ -15,8 +16,6 @@ namespace Prophet {
         // ===========================================================
         // Fields
         // ===========================================================
-
-        public static LocalPlayer Me = StyxWoW.Me;
 
         // ===========================================================
         // Constructors
@@ -57,10 +56,11 @@ namespace Prophet {
 
         public override void OnEnable() {
             try {
+                CustomNormalLog("test enable");
                 Lua.Events.AttachEvent("PARTY_INVITE_REQUEST", HandlePartyInviteRequest);
                 base.OnEnable();
             } catch(Exception e) {
-                CustomNormalLog("Could not initialize. Message = " + e.Message + " Stacktrace = " + e.StackTrace);
+                CustomDiagnosticLog("Could not initialize. Message = " + e.Message + " Stacktrace = " + e.StackTrace);
             } finally {
                 CustomNormalLog("Initialization complete.");
             }
@@ -68,15 +68,16 @@ namespace Prophet {
 
         public override void OnDisable() {
             try {
+                CustomNormalLog("test disable");
                 Lua.Events.DetachEvent("PARTY_INVITE_REQUEST", HandlePartyInviteRequest);
                 base.OnDisable();
             } catch(Exception e) {
-                CustomNormalLog("Could not dispose. Message = " + e.Message + " Stacktrace = " + e.StackTrace);
+                CustomDiagnosticLog("Could not dispose. Message = " + e.Message + " Stacktrace = " + e.StackTrace);
             } finally {
                 CustomNormalLog("Shutdown complete.");
             }
         }
-
+        
         public override void Pulse() {
             if(!PartyLeader.CanInvite()) { return; }
 
@@ -93,6 +94,22 @@ namespace Prophet {
                     return;
                 }
 
+                if(Character.Me.GroupInfo.IsInParty) {
+
+                    if(!PartyLeader.PartyLeaderTimer.IsRunning) {
+                        Character.HandleLootMethod();
+                        Character.HandleLootThreshold();
+                        Character.HandleDungeonDifficulty();
+                        Character.HandlePassOnLoot();
+                        Character.HandleSetRole();
+                        PartyLeader.PartyLeaderTimer.Start();
+                    } else {
+                        if(PartyLeader.PartyLeaderTimer.ElapsedMilliseconds > 1000) {
+                            PartyLeader.PartyLeaderTimer.Reset();
+                        }
+                    }
+                }
+
                 PartyLeader.SendOutInvites();
             }
 
@@ -105,6 +122,14 @@ namespace Prophet {
                 CustomNormalLog("You have to provide the party leader name.");
             }
 
+            if(Character.Me.GroupInfo.IsInParty) {
+                if(Character.Me.IsLeader()) {
+                    if(Character.GroupMemberExistsInParty(PartySettings.Instance.PartyLeaderName)) {
+                        Lua.DoString(string.Format("PromoteToLeader('{0}');", PartySettings.Instance.PartyLeaderName));
+                    }
+                }
+            }
+
             if(!PartyMember.PartyMemberTimer.IsRunning) {
                 return;
             }
@@ -113,11 +138,11 @@ namespace Prophet {
                 return;
             }
 
-            if(!Me.GroupInfo.IsInParty) {
+            if(!Character.Me.GroupInfo.IsInParty) {
                 PartyMember.PartyMemberTimer.Reset();
             }
 
-            PartyMember.HandleStaticPopup();
+            Character.HandleStaticPopup();
             PartyMember.LeaveParty();
         }
 
@@ -129,9 +154,13 @@ namespace Prophet {
             Logging.Write(Colors.DeepSkyBlue, "[Prophet]: " + message, args);
         }
 
+        public static void CustomDiagnosticLog(string message, params object[] args) {
+            Logging.WriteDiagnostic(Colors.DeepSkyBlue, "[Prophet]: " + message, args);
+        }
+
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
             if(PartySettings.Instance.PartyClassification == "Party Leader") {
-                PartyMember.DeclineInvite();
+                Character.DeclineInvite();
                 return;
             }
 
@@ -140,9 +169,13 @@ namespace Prophet {
             CustomNormalLog("We got an invite from " + partyInviteSender + ".");
 
             if(partyInviteSender == PartySettings.Instance.PartyLeaderName) {
-                PartyMember.AcceptInvite();
+                Character.AcceptInvite();
+
+                if(!PartyMember.PartyMemberTimer.IsRunning) {
+                    PartyMember.PartyMemberTimer.Start();
+                }
             } else {
-                PartyMember.DeclineInvite();
+                Character.DeclineInvite();
             }
         }
 

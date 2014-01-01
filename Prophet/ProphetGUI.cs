@@ -41,6 +41,7 @@ namespace Prophet {
             // Party Leader Privileges
             partyLeaderLootComboBox.Text = PartySettings.Instance.Loot;
             partyLeaderLootThresholdComboBox.Text = PartySettings.Instance.LootThreshold;
+            partyLeaderDungeonDifficultyComboBox.Text = PartySettings.Instance.DungeonDifficulty;
             partyLeaderPassOnLootComboBox.Text = PartySettings.Instance.PassOnLoot;
             partyLeaderSetRoleComboBox.Text = PartySettings.Instance.SetRole;
 
@@ -135,92 +136,37 @@ namespace Prophet {
 
         // Party Leader Privileges
         private void partyLeaderLootComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyLeaderLootComboBox.Text == "Free For All") {
-            }
-
-            if(partyLeaderLootComboBox.Text == "Round Robin") {
-            }
-
-            if(partyLeaderLootComboBox.Text == "Master Looter") {
-            }
-
-            if(partyLeaderLootComboBox.Text == "Group Loot") {
-            }
-
-            if(partyLeaderLootComboBox.Text == "Need Before Greed") {
-            }
-
             PartySettings.Instance.Loot = partyLeaderLootComboBox.Text;
             PartySettings.Save();
         }
 
         private void partyLeaderLootThresholdComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyLeaderLootThresholdComboBox.Text == "Uncommon") {
-            }
-
-            if(partyLeaderLootThresholdComboBox.Text == "Rare") {
-            }
-
-            if(partyLeaderLootThresholdComboBox.Text == "Epic") {
-            }
-
             PartySettings.Instance.LootThreshold = partyLeaderLootThresholdComboBox.Text;
             PartySettings.Save();
         }
 
+        private void partyLeaderDungeonDifficultyComboBox_SelectedValueChanged(object sender, EventArgs e) {
+            PartySettings.Instance.DungeonDifficulty = partyLeaderDungeonDifficultyComboBox.Text;
+            PartySettings.Save();
+        }
+
         private void partyLeaderPassOnLootComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyLeaderPassOnLootComboBox.Text == "No") {
-            }
-
-            if(partyLeaderPassOnLootComboBox.Text == "Yes") {
-            }
-
             PartySettings.Instance.PassOnLoot = partyLeaderPassOnLootComboBox.Text;
             PartySettings.Save();
         }
 
         private void partyLeaderSetRoleComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyLeaderSetRoleComboBox.Text == "None") {
-            }
-
-            if(partyLeaderSetRoleComboBox.Text == "Tank") {
-            }
-
-            if(partyLeaderSetRoleComboBox.Text == "Healer") {
-            }
-
-            if(partyLeaderSetRoleComboBox.Text == "Damage") {
-            }
-
             PartySettings.Instance.SetRole = partyLeaderSetRoleComboBox.Text;
             PartySettings.Save();
         }
 
         // Party Member Privileges
         private void partyMemberPassOnLootComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyMemberPassOnLootComboBox.Text == "No") {
-            }
-
-            if(partyMemberPassOnLootComboBox.Text == "Yes") {
-            }
-
             PartySettings.Instance.PassOnLoot = partyMemberPassOnLootComboBox.Text;
             PartySettings.Save();
         }
 
         private void partyMemberSetRoleComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(partyMemberSetRoleComboBox.Text == "None") {
-            }
-
-            if(partyMemberSetRoleComboBox.Text == "Tank") {
-            }
-
-            if(partyMemberSetRoleComboBox.Text == "Healer") {
-            }
-
-            if(partyMemberSetRoleComboBox.Text == "Damage") {
-            }
-
             PartySettings.Instance.SetRole = partyMemberSetRoleComboBox.Text;
             PartySettings.Save();
         }
