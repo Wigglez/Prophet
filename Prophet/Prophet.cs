@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Media;
 using Styx;
 using Styx.Common;
@@ -131,7 +130,7 @@ namespace Prophet {
         }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
-            if(PartySettings.Instance.PartyClassification == "Party Member") {
+            if(PartySettings.Instance.PartyClassification == "Party Leader") {
                 PartyMember.DeclineInvite();
                 return;
             }

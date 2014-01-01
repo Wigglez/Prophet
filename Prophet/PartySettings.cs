@@ -1,9 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using Styx;
 using Styx.Common;
-using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
 namespace Prophet {

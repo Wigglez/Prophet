@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Prophet;
 using Styx;
 using Styx.Helpers;
 using Styx.WoWInternals;
