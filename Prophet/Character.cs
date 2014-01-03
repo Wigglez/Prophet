@@ -89,9 +89,11 @@ namespace Prophet {
 
                 //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
                 if(PartySettings.Instance.PartyClassification == "Party Leader") {
-                    if(raidRosterInfo == PartyMember.Name[i - 1]) {
-                        //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
-                        return true;
+                    for(var j = 0; j < PartySettings.Instance.PartyMemberName.Length; j++) {
+                        if(raidRosterInfo == PartyMember.Name[j]) {
+                            //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
+                            return true;
+                        }
                     }
                 } else {
                     if(raidRosterInfo == PartyLeader.Name) {
