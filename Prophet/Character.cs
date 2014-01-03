@@ -82,16 +82,24 @@ namespace Prophet {
 
         public static bool GroupMemberExistsInParty(string name) {
             if(GetNumGroupMembers() <= 1) {
+                Prophet.CustomNormalLog("GroupMemberExistsInParty: GetNumGroupMembers() <= 1");
                 return false;
             }
 
             for(var i = 1; i <= GetNumGroupMembers(); i++) {
+                Prophet.CustomNormalLog("GroupMemberExistsInParty: i = {0}", i);
+
                 var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
 
-                //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
+                Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
+
                 if(PartySettings.Instance.PartyClassification == "Party Leader") {
+                    Prophet.CustomNormalLog("GroupMemberExistsInParty: PartySettings.Instance.PartyClassification == Party Leader");
                     for(var j = 0; j < PartySettings.Instance.PartyMemberName.Length; j++) {
+                        Prophet.CustomNormalLog("GroupMemberExistsInParty: j = {0}", j);
+                        Prophet.CustomNormalLog("GroupMemberExistsInParty: PartySettings.Instance.PartyMemberName.Length = {0}", PartySettings.Instance.PartyMemberName.Length);
                         if(raidRosterInfo == PartyMember.Name[j]) {
+                            Prophet.CustomNormalLog("GroupMemberExistsInParty: Name[j] = {0}", PartyMember.Name[j]);
                             //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
                             return true;
                         }
