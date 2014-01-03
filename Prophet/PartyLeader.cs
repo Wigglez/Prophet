@@ -77,9 +77,8 @@ namespace Prophet {
 
             return count;
             */
-            var a = PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
-            Prophet.CustomNormalLog("GetRequiredPartyCount: count = {0}", a);
-            return a;
+
+            return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
         }
 
         public static bool ShouldInvite(string name) {

@@ -52,6 +52,8 @@ namespace Prophet {
                 }
 
                 NameAndRealm[i] = Name[i] + "-" + Realm[i];
+
+                Prophet.CustomDiagnosticLog("PartyMember (DetermineNameAndRealm): Name: {0} Realm: {1} NameAndRealm: {2} Added", Name[i], Realm[i], NameAndRealm[i]);
             }
         }
 
