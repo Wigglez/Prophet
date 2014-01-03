@@ -140,13 +140,7 @@ namespace Prophet {
                 PartyMember.AcceptInviteTimer.Reset();
             }
 
-
-            if(Character.Me.IsLeader()) {
-                if(Character.GroupMemberExistsInParty(PartyLeader.Name)) {
-                    Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.Name));
-                }
-            }
-
+            Character.HandlePartyLeaderPromotion();
             Character.HandlePassOnLoot();
             Character.HandleSetRole();
             Character.HandleStaticPopup();

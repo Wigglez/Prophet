@@ -69,8 +69,8 @@ namespace Prophet {
             return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
         }
 
-        public static bool ShouldInvite(string name) {
-            return name != "" && !Character.GroupMemberExistsInParty(name);
+        public static bool ShouldInvite(string nameAndRealm) {
+            return !string.IsNullOrEmpty(nameAndRealm) && !Character.GroupMemberExistsInParty(nameAndRealm);
         }
 
         public static void SendOutInvites() {
@@ -81,7 +81,7 @@ namespace Prophet {
                     if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
                 }
 
-                if(!ShouldInvite(PartyMember.Name[i])) { continue; }
+                if(!ShouldInvite(PartyMember.NameAndRealm[i])) { continue; }
 
                 // Scan the friends list for our friend
                 if(!BNCanInvite(PartyMember.NameAndRealm[i])) {

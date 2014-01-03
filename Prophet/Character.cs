@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bots.DungeonBuddy.Helpers;
 using Styx;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
@@ -80,15 +81,28 @@ namespace Prophet {
             return StyxWoW.Me.GroupInfo.RaidMembers.Count();
         }
 
-        public static bool GroupMemberExistsInParty(string name) {
+        public static bool GroupMemberExistsInParty(string nameAndRealm) {
             if(GetNumGroupMembers() <= 1) {
                 return false;
+            }
+
+            var nameNoRealm = nameAndRealm;
+            
+            if(nameAndRealm.Contains('-')) {
+                var index = nameAndRealm.IndexOf('-');
+                var toonRealm = nameAndRealm.Substring(index + 1);
+
+                var leaderRealm = Me.RealmName;
+
+                if(leaderRealm == toonRealm) {
+                    nameNoRealm = nameAndRealm.Substring(0, index);
+                }
             }
 
             for(var i = 1; i <= GetNumGroupMembers(); i++) {
                 var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
 
-                if(raidRosterInfo != name) {
+                if(raidRosterInfo != nameNoRealm) {
                     continue;
                 }
 
@@ -96,6 +110,20 @@ namespace Prophet {
             }
 
             return false;
+        }
+
+        public static void HandlePartyLeaderPromotion() {
+            if(!Me.IsLeader()) {
+                return;
+            }
+
+            if(!GroupMemberExistsInParty(PartyLeader.NameAndRealm)) {
+                return;
+            }
+
+            Prophet.CustomNormalLog("I am the leader, trying to promote designated leader.");
+            Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.Name));
+            Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.NameAndRealm));
         }
 
         // method, partyMaster, raidMaster
