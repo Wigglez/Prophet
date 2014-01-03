@@ -113,7 +113,7 @@ namespace Prophet {
         }
 
         public static void HandlePartyLeaderPromotion() {
-            if(!Me.IsLeader()) {
+            if(!Me.IsGroupLeader) {
                 return;
             }
 
