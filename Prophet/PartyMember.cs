@@ -37,7 +37,7 @@ namespace Prophet {
         // ===========================================================
 
         public static void DetermineNameAndRealm() {
-            for(var i = 0; i < PartyLeader.RequiredPartyCount; i++) {
+            for(var i = 0; i < PartySettings.Instance.PartyMemberName.Length; i++) {
                 if(string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName[i])) {
                     continue;
                 }

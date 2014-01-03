@@ -17,6 +17,8 @@ namespace Prophet {
 
         public static PartySettings Instance = new PartySettings();
 
+        private string[] _partyMemberName = new string[4];
+
         private string _partyClassification = "None";
         private string _loot = "Group Loot";
         private string _lootThreshold = "Uncommon";
@@ -50,7 +52,7 @@ namespace Prophet {
         public string PartyClassification { get { return _partyClassification; } set { _partyClassification = value; } }
 
         // Party leader shit
-        public string[] PartyMemberName { get; set; }
+        public string[] PartyMemberName { get { return _partyMemberName; } set { _partyMemberName = value; } }
         /*
         public string PartyMemberName1 { get; set; }
         public string PartyMemberName2 { get; set; }
