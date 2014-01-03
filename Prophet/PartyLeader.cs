@@ -20,6 +20,8 @@ namespace Prophet {
         public static Stopwatch PartyLeaderTimer = new Stopwatch();
 
         public static string Name;
+        public static string Realm;
+        public static string NameAndRealm;
 
         // ===========================================================
         // Constructors
@@ -41,54 +43,42 @@ namespace Prophet {
         // Methods
         // ===========================================================
 
+        public static void DetermineNameAndRealm() {
+            if(string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName)) {
+                return;
+            }
+
+            if(!PartySettings.Instance.PartyLeaderName.Contains('-')) {
+                Name = PartySettings.Instance.PartyLeaderName;
+                Realm = Character.Me.RealmName;
+            } else {
+                var indexOfDash = PartySettings.Instance.PartyLeaderName.IndexOf('-');
+                Name = PartySettings.Instance.PartyLeaderName.Substring(0, indexOfDash);
+                Realm = PartySettings.Instance.PartyLeaderName.Substring(indexOfDash + 1);
+            }
+
+            NameAndRealm = Name + "-" + Realm;
+        }
+
         public static bool CanInvite() { return Character.Me.IsValid && StyxWoW.IsInGame; }
 
         public static bool Exists() { return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName); }
 
         public static int GetRequiredPartyCount() {
+            /*
             var count = 0;
 
-            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName1)) {
-                if(PartySettings.Instance.PartyMemberName1.Contains('-')) {
-                    PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1;
-                } else {
-                    PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1 + '-' + Character.Me.RealmName;
+            for(var i = 0; i < PartySettings.Instance.PartyMemberName.Length; i++) {
+                if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName[i])) {
+                    count++;
                 }
-
-                count++;
             }
-
-            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName2)) {
-                if(PartySettings.Instance.PartyMemberName2.Contains('-')) {
-                    PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2;
-                } else {
-                    PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2 + '-' + Character.Me.RealmName;
-                }
-
-                count++;
-            }
-
-            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName3)) {
-                if(PartySettings.Instance.PartyMemberName3.Contains('-')) {
-                    PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3;
-                } else {
-                    PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3 + '-' + Character.Me.RealmName;
-                }
-
-                count++;
-            }
-
-            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName4)) {
-                if(PartySettings.Instance.PartyMemberName4.Contains('-')) {
-                    PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4;
-                } else {
-                    PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4 + '-' + Character.Me.RealmName;
-                }
-
-                count++;
-            }
+           
 
             return count;
+             */
+
+            return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
         }
 
         public static bool ShouldInvite(string name) {
@@ -102,7 +92,7 @@ namespace Prophet {
                 if(Character.Me.GroupInfo.IsInParty) {
                     if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
                 }
-                
+
                 if(!ShouldInvite(PartyMember.Name[i])) { continue; }
                 //Prophet.CustomNormalLog("RequiredPartyCount = {0}", RequiredPartyCount);
                 //Prophet.CustomNormalLog("GetNumGroupMembers = {0}", GetNumGroupMembers());
@@ -110,8 +100,8 @@ namespace Prophet {
                 //Prophet.CustomNormalLog("SendOutInvites: Name = {0}", PartyMember.Name[i]);
 
                 // Scan the friends list for our friend
-                if(!BNCanInvite(PartyMember.Name[i])) {
-                    Prophet.CustomNormalLog("SendOutInvites: Can't invite {0}", PartyMember.Name[i]);
+                if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
+                    Prophet.CustomNormalLog("SendOutInvites: Can't invite {0}", PartyMember.NameAndRealm[i]);
                     continue;
                 }
 

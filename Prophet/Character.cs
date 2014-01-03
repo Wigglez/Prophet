@@ -83,30 +83,25 @@ namespace Prophet {
         public static bool GroupMemberExistsInParty(string name) {
             if(GetNumGroupMembers() <= 1) { return false; }
 
-            var nameNoRealm = name;
-            var leaderRealm = Me.RealmName;
 
-            if(name.Contains('-')) {
-                var index = name.IndexOf('-');
-                var toonRealm = name.Substring(index + 1);
-                //Prophet.CustomNormalLog("toonRealm = {0}", toonRealm);
+            for(var i = 1; i < GetNumGroupMembers(); i++) {
+                var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
 
-                if(leaderRealm == toonRealm) {
-                    nameNoRealm = name.Substring(0, index);
+                //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
+                if(PartySettings.Instance.PartyClassification == "Party Leader") {
+                    if(raidRosterInfo == PartyMember.Name[i - 1]) {
+                        //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
+                        return true;
+                    }
+                } else {
+                    if(raidRosterInfo == PartyLeader.Name) {
+                        //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
+                        return true;
+                    }
                 }
             }
 
             //Prophet.CustomNormalLog("GroupMemberExistsInParty: name = {0}", nameNoRealm);
-
-            for(var i = 1; i <= GetNumGroupMembers(); i++) {
-                var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
-
-                //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidrosterinfo name = {0}", raidRosterInfo);
-                if(raidRosterInfo == nameNoRealm) {
-                    //Prophet.CustomNormalLog("GroupMemberExistsInParty: raidRosterInfo == nameNoRealm, i = {0}", i);
-                    return true;
-                }
-            }
 
             return false;
         }
@@ -306,7 +301,7 @@ namespace Prophet {
                     }
 
                     SetOptOutOfLoot("true");
-                   
+
                     break;
             }
         }

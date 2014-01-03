@@ -11,11 +11,13 @@ namespace Prophet {
             // Party Classification
             characterRoleComboBox.Text = PartySettings.Instance.PartyClassification;
 
+
+
             // Party Leader
-            partyMember1TextBox.Text = PartySettings.Instance.PartyMemberName1;
-            partyMember2TextBox.Text = PartySettings.Instance.PartyMemberName2;
-            partyMember3TextBox.Text = PartySettings.Instance.PartyMemberName3;
-            partyMember4TextBox.Text = PartySettings.Instance.PartyMemberName4;
+            partyMember1TextBox.Text = PartySettings.Instance.PartyMemberName[0];
+            partyMember2TextBox.Text = PartySettings.Instance.PartyMemberName[1];
+            partyMember3TextBox.Text = PartySettings.Instance.PartyMemberName[2];
+            partyMember4TextBox.Text = PartySettings.Instance.PartyMemberName[3];
 
             if(partyMember1TextBox.Text == "") {
                 partyMember2Label.Visible = false;
@@ -91,7 +93,7 @@ namespace Prophet {
                 partyMember2TextBox.Visible = true;
             }
 
-            PartySettings.Instance.PartyMemberName1 = partyMember1TextBox.Text;
+            PartySettings.Instance.PartyMemberName[0] = partyMember1TextBox.Text;
             PartySettings.Save();
         }
 
@@ -105,7 +107,7 @@ namespace Prophet {
                 partyMember3TextBox.Visible = true;
             }
 
-            PartySettings.Instance.PartyMemberName2 = partyMember2TextBox.Text;
+            PartySettings.Instance.PartyMemberName[1] = partyMember2TextBox.Text;
             PartySettings.Save();
         }
 
@@ -119,12 +121,12 @@ namespace Prophet {
                 partyMember4TextBox.Visible = true;
             }
 
-            PartySettings.Instance.PartyMemberName3 = partyMember3TextBox.Text;
+            PartySettings.Instance.PartyMemberName[2] = partyMember3TextBox.Text;
             PartySettings.Save();
         }
 
         private void partyMember4TextBox_TextChanged(object sender, EventArgs e) {
-            PartySettings.Instance.PartyMemberName4 = partyMember4TextBox.Text;
+            PartySettings.Instance.PartyMemberName[3] = partyMember4TextBox.Text;
             PartySettings.Save();
         }
 

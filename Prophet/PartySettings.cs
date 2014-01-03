@@ -50,10 +50,13 @@ namespace Prophet {
         public string PartyClassification { get { return _partyClassification; } set { _partyClassification = value; } }
 
         // Party leader shit
+        public string[] PartyMemberName { get; set; }
+        /*
         public string PartyMemberName1 { get; set; }
         public string PartyMemberName2 { get; set; }
         public string PartyMemberName3 { get; set; }
         public string PartyMemberName4 { get; set; }
+         */
 
         // Party member shit
         public string PartyLeaderName { get; set; }
