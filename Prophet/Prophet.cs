@@ -95,7 +95,6 @@ namespace Prophet {
                 }
 
                 if(Character.Me.GroupInfo.IsInParty) {
-
                     if(!PartyLeader.PartyLeaderTimer.IsRunning) {
                         Character.HandleLootMethod();
                         Character.HandleLootThreshold();
@@ -122,6 +121,8 @@ namespace Prophet {
                 CustomNormalLog("You have to provide the party leader name.");
                 return;
             }
+
+            PartyMember.LeaderNameNormalize();
 
             if(!Character.Me.GroupInfo.IsInParty) {
                 return;

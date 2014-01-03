@@ -46,6 +46,18 @@ namespace Prophet {
             Lua.DoString("LeaveParty()");
         }
 
+        public static void LeaderNameNormalize() {
+            if(string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName)) {
+                return;
+            }
+
+            if(PartySettings.Instance.PartyLeaderName.Contains('-')) {
+                PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName;
+            } else {
+                PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName + '-' + Character.Me.RealmName;
+            }
+        }
+
         // ===========================================================
         // Inner and Anonymous Classes
         // ===========================================================

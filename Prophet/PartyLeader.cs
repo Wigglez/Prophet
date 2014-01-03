@@ -41,20 +41,12 @@ namespace Prophet {
 
         public static bool CanInvite() { return Character.Me.IsValid && StyxWoW.IsInGame; }
 
-        public static bool Exists() { return PartySettings.Instance.PartyLeaderName != ""; }
+        public static bool Exists() { return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName); }
 
         public static int GetRequiredPartyCount() {
             var count = 0;
 
-            if(PartySettings.Instance.PartyLeaderName != "") {
-                if(PartySettings.Instance.PartyLeaderName.Contains('-')) {
-                    PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName;
-                } else {
-                    PartySettings.Instance.PartyLeaderName = PartySettings.Instance.PartyLeaderName + '-' + Character.Me.RealmName;
-                }
-            }
-
-            if(PartySettings.Instance.PartyMemberName1 != "") {
+            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName1)) {
                 if(PartySettings.Instance.PartyMemberName1.Contains('-')) {
                     PartyMember.Name[0] = PartySettings.Instance.PartyMemberName1;
                 } else {
@@ -64,7 +56,7 @@ namespace Prophet {
                 count++;
             }
 
-            if(PartySettings.Instance.PartyMemberName2 != "") {
+            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName2)) {
                 if(PartySettings.Instance.PartyMemberName2.Contains('-')) {
                     PartyMember.Name[1] = PartySettings.Instance.PartyMemberName2;
                 } else {
@@ -74,7 +66,7 @@ namespace Prophet {
                 count++;
             }
 
-            if(PartySettings.Instance.PartyMemberName3 != "") {
+            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName3)) {
                 if(PartySettings.Instance.PartyMemberName3.Contains('-')) {
                     PartyMember.Name[2] = PartySettings.Instance.PartyMemberName3;
                 } else {
@@ -84,7 +76,7 @@ namespace Prophet {
                 count++;
             }
 
-            if(PartySettings.Instance.PartyMemberName4 != "") {
+            if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName4)) {
                 if(PartySettings.Instance.PartyMemberName4.Contains('-')) {
                     PartyMember.Name[3] = PartySettings.Instance.PartyMemberName4;
                 } else {
