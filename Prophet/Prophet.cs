@@ -86,8 +86,6 @@ namespace Prophet {
             
             // If the user is the party leader
             if(PartySettings.Instance.PartyClassification == "Party Leader") {
-                PartyMember.DetermineNameAndRealm();
-
                 // Constantly update the amount of people we should have in group (in case it changes)
                 PartyLeader.RequiredPartyCount = PartyLeader.GetRequiredPartyCount();
 
@@ -95,6 +93,8 @@ namespace Prophet {
                     CustomNormalLog("You have to provide at least one party member name.");
                     return;
                 }
+
+                PartyMember.DetermineNameAndRealm();
 
                 if(Character.Me.GroupInfo.IsInParty) {
                     if(!PartyLeader.PartyLeaderTimer.IsRunning) {

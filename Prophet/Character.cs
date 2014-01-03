@@ -81,8 +81,9 @@ namespace Prophet {
         }
 
         public static bool GroupMemberExistsInParty(string name) {
-            if(GetNumGroupMembers() <= 1) { return false; }
-
+            if(GetNumGroupMembers() <= 1) {
+                return false;
+            }
 
             for(var i = 1; i <= GetNumGroupMembers(); i++) {
                 var raidRosterInfo = Lua.GetReturnVal<string>(String.Format("return (select(1, GetRaidRosterInfo({0})))", i), 0);
