@@ -40,14 +40,14 @@ namespace Prophet {
         }
 
         public static void DeclineInvite() {
-            Prophet.CustomNormalLog("Declined invite.");
+            Prophet.CustomNormalLog("Declined invite due to invalid leader.");
             Lua.DoString("DeclineGroup()");
 
             HandleStaticPopup();
         }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
-            if(PartySettings.Instance.PartyClassification == "Party Leader") {
+            if(PartySettings.Instance.PartyClassification == PartySettings.StringPartyLeader) {
                 DeclineInvite();
                 return;
             }
@@ -64,7 +64,7 @@ namespace Prophet {
         }
 
         public static void HandleStaticPopup() {
-            // If there is a popup visible, get rid of that shit
+            // If there is a popup visible, get rid of that
             var partyInvitePopup = Lua.GetReturnVal<bool>("return StaticPopup_Visible('PARTY_INVITE')", 0);
             var partyInviteCrossrealmPopup = Lua.GetReturnVal<bool>("return StaticPopup_Visible('PARTY_INVITE_XREALM')", 0);
 
@@ -118,7 +118,7 @@ namespace Prophet {
             var lootMethod = GetLootMethod()[0];
 
             switch(PartySettings.Instance.Loot) {
-                case "Free For All":
+                case PartySettings.StringFreeForAll:
                     if(lootMethod == "freeforall") {
                         return;
                     }
@@ -126,7 +126,7 @@ namespace Prophet {
                     SetLootMethod("freeforall");
 
                     break;
-                case "Group Loot":
+                case PartySettings.StringGroupLoot:
                     if(lootMethod == "group") {
                         return;
                     }
@@ -134,7 +134,7 @@ namespace Prophet {
                     SetLootMethod("group");
 
                     break;
-                case "Master Looter":
+                case PartySettings.StringMasterLooter:
                     if(lootMethod == "master") {
                         return;
                     }
@@ -142,7 +142,7 @@ namespace Prophet {
                     SetLootMethod("master");
 
                     break;
-                case "Need Before Greed":
+                case PartySettings.StringNeedBeforeGreed:
                     if(lootMethod == "needbeforegreed") {
                         return;
                     }
@@ -150,7 +150,7 @@ namespace Prophet {
                     SetLootMethod("needbeforegreed");
 
                     break;
-                case "Round Robin":
+                case PartySettings.StringRoundRobin:
                     if(lootMethod == "roundrobin") {
                         return;
                     }
@@ -183,7 +183,7 @@ namespace Prophet {
             var lootThreshold = GetLootThreshold();
 
             switch(PartySettings.Instance.LootThreshold) {
-                case "Uncommon":
+                case PartySettings.StringUncommon:
                     if(lootThreshold == 2) {
                         return;
                     }
@@ -191,7 +191,7 @@ namespace Prophet {
                     SetLootThreshold(2);
 
                     break;
-                case "Rare":
+                case PartySettings.StringRare:
                     if(lootThreshold == 3) {
                         return;
                     }
@@ -199,7 +199,7 @@ namespace Prophet {
                     SetLootThreshold(3);
 
                     break;
-                case "Epic":
+                case PartySettings.StringEpic:
                     if(lootThreshold == 4) {
                         return;
                     }
@@ -238,7 +238,7 @@ namespace Prophet {
             var dungeonDifficulty = GetDungeonDifficultyID();
 
             switch(PartySettings.Instance.DungeonDifficulty) {
-                case "5 Player Normal":
+                case PartySettings.String5PlayerNormal:
                     if(dungeonDifficulty == 1) {
                         return;
                     }
@@ -246,7 +246,7 @@ namespace Prophet {
                     SetDungeonDifficultyID(1);
 
                     break;
-                case "5 Player Heroic":
+                case PartySettings.String5PlayerHeroic:
                     if(dungeonDifficulty == 2) {
                         return;
                     }
@@ -254,7 +254,7 @@ namespace Prophet {
                     SetDungeonDifficultyID(2);
 
                     break;
-                case "Challenge Mode":
+                case PartySettings.StringChallengeMode:
                     if(dungeonDifficulty == 8) {
                         return;
                     }
@@ -279,7 +279,7 @@ namespace Prophet {
             var passOnLoot = GetOptOutOfLoot();
 
             switch(PartySettings.Instance.PassOnLoot) {
-                case "No":
+                case PartySettings.StringNo:
                     if(passOnLoot == 0) {
                         return;
                     }
@@ -287,7 +287,7 @@ namespace Prophet {
                     SetOptOutOfLoot("false");
 
                     break;
-                case "Yes":
+                case PartySettings.StringYes:
                     if(passOnLoot == 1) {
                         return;
                     }
@@ -322,7 +322,7 @@ namespace Prophet {
             var role = UnitGroupRoleAssigned();
 
             switch(PartySettings.Instance.SetRole) {
-                case "No Role":
+                case PartySettings.StringNoRole:
                     if(role == "NONE") {
                         return;
                     }
@@ -330,7 +330,7 @@ namespace Prophet {
                     UnitSetRole("NONE");
 
                     break;
-                case "Tank":
+                case PartySettings.StringTank:
                     if(role == "TANK") {
                         return;
                     }
@@ -338,7 +338,7 @@ namespace Prophet {
                     UnitSetRole("TANK");
 
                     break;
-                case "Healer":
+                case PartySettings.StringHealer:
                     if(role == "HEALER") {
                         return;
                     }
@@ -346,7 +346,7 @@ namespace Prophet {
                     UnitSetRole("HEALER");
 
                     break;
-                case "Damage":
+                case PartySettings.StringDamage:
                     if(role == "DAMAGER") {
                         return;
                     }

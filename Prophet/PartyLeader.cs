@@ -66,19 +66,6 @@ namespace Prophet {
         public static bool Exists() { return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName); }
 
         public static int GetRequiredPartyCount() {
-           /*
-            var count = 0;
-
-            for(var i = 0; i < PartySettings.Instance.PartyMemberName.Length; i++) {
-                if(!string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName[i])) {
-                    count++;
-                }
-            }
-           
-
-            return count;
-            */
-
             return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
         }
 
@@ -87,7 +74,7 @@ namespace Prophet {
         }
 
         public static void SendOutInvites() {
-            if(PartySettings.Instance.PartyClassification != "Party Leader") { return; }
+            if(PartySettings.Instance.PartyClassification != PartySettings.StringPartyLeader) { return; }
 
             for(var i = 0; i < RequiredPartyCount; i++) {
                 if(Character.Me.GroupInfo.IsInParty) {
@@ -98,7 +85,7 @@ namespace Prophet {
 
                 // Scan the friends list for our friend
                 if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
-                    Prophet.CustomNormalLog("SendOutInvites: Can't invite {0}", PartyMember.NameAndRealm[i]);
+                    Prophet.CustomNormalLog("Can't invite {0}. Is this player on your Battle.net Friends List or offline?", PartyMember.NameAndRealm[i]);
                     continue;
                 }
 
@@ -137,18 +124,13 @@ namespace Prophet {
             for(var i = 1; i <= numFriends; i++) {
                 try {
                     var presenceID = BNGetFriendInfo(i)[0].ToInt32();
-                    //Prophet.CustomNormalLog("BNCanInvite: presenceID = {0}", presenceID);
                     var currentClient = BNGetFriendInfo(i)[6];
                     var isOnline = currentClient == "WoW";
-                    //Prophet.CustomNormalLog("BNCanInvite: isOnline = {0}", isOnline);
 
                     var toonName = BNGetToonInfo(presenceID)[1];
-                    //Prophet.CustomNormalLog("BNCanInvite: toonName = {0}", toonName);
                     var realmName = BNGetToonInfo(presenceID)[3];
-                    //Prophet.CustomNormalLog("BNCanInvite: realmName = {0}", realmName);
 
                     var combinedName = toonName + "-" + realmName;
-                    //Prophet.CustomNormalLog("BNCanInvite: combinedName = {0}", combinedName);
 
                     if(combinedName != nameAndRealm || !isOnline) {
                         continue;

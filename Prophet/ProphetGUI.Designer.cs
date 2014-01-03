@@ -90,16 +90,12 @@
             // 
             // characterRoleComboBox
             // 
-            this.characterRoleComboBox.AutoCompleteCustomSource.AddRange(new string[] {
-            "None",
-            "Party Leader",
-            "Party Member"});
             this.characterRoleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.characterRoleComboBox.FormattingEnabled = true;
             this.characterRoleComboBox.Items.AddRange(new object[] {
-            "None",
-            "Party Leader",
-            "Party Member"});
+            PartySettings.StringNone,
+            PartySettings.StringPartyLeader,
+            PartySettings.StringPartyMember});
             this.characterRoleComboBox.Location = new System.Drawing.Point(121, 21);
             this.characterRoleComboBox.Name = "characterRoleComboBox";
             this.characterRoleComboBox.Size = new System.Drawing.Size(162, 23);
@@ -277,9 +273,9 @@
             this.partyLeaderDungeonDifficultyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyLeaderDungeonDifficultyComboBox.FormattingEnabled = true;
             this.partyLeaderDungeonDifficultyComboBox.Items.AddRange(new object[] {
-            "5 Player Normal",
-            "5 Player Heroic",
-            "Challenge Mode"});
+            PartySettings.String5PlayerNormal,
+            PartySettings.String5PlayerHeroic,
+            PartySettings.StringChallengeMode});
             this.partyLeaderDungeonDifficultyComboBox.Location = new System.Drawing.Point(121, 77);
             this.partyLeaderDungeonDifficultyComboBox.Name = "partyLeaderDungeonDifficultyComboBox";
             this.partyLeaderDungeonDifficultyComboBox.Size = new System.Drawing.Size(162, 23);
@@ -331,10 +327,10 @@
             this.partyLeaderSetRoleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyLeaderSetRoleComboBox.FormattingEnabled = true;
             this.partyLeaderSetRoleComboBox.Items.AddRange(new object[] {
-            "No Role",
-            "Tank",
-            "Healer",
-            "Damage"});
+            PartySettings.StringNoRole,
+            PartySettings.StringTank,
+            PartySettings.StringHealer,
+            PartySettings.StringDamage});
             this.partyLeaderSetRoleComboBox.Location = new System.Drawing.Point(121, 133);
             this.partyLeaderSetRoleComboBox.Name = "partyLeaderSetRoleComboBox";
             this.partyLeaderSetRoleComboBox.Size = new System.Drawing.Size(162, 23);
@@ -346,9 +342,9 @@
             this.partyLeaderLootThresholdComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyLeaderLootThresholdComboBox.FormattingEnabled = true;
             this.partyLeaderLootThresholdComboBox.Items.AddRange(new object[] {
-            "Uncommon",
-            "Rare",
-            "Epic"});
+            PartySettings.StringUncommon,
+            PartySettings.StringRare,
+            PartySettings.StringEpic});
             this.partyLeaderLootThresholdComboBox.Location = new System.Drawing.Point(121, 49);
             this.partyLeaderLootThresholdComboBox.Name = "partyLeaderLootThresholdComboBox";
             this.partyLeaderLootThresholdComboBox.Size = new System.Drawing.Size(162, 23);
@@ -360,8 +356,8 @@
             this.partyLeaderPassOnLootComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyLeaderPassOnLootComboBox.FormattingEnabled = true;
             this.partyLeaderPassOnLootComboBox.Items.AddRange(new object[] {
-            "No",
-            "Yes"});
+            PartySettings.StringNo,
+            PartySettings.StringYes});
             this.partyLeaderPassOnLootComboBox.Location = new System.Drawing.Point(121, 105);
             this.partyLeaderPassOnLootComboBox.Name = "partyLeaderPassOnLootComboBox";
             this.partyLeaderPassOnLootComboBox.Size = new System.Drawing.Size(162, 23);
@@ -373,11 +369,11 @@
             this.partyLeaderLootComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyLeaderLootComboBox.FormattingEnabled = true;
             this.partyLeaderLootComboBox.Items.AddRange(new object[] {
-            "Free For All",
-            "Round Robin",
-            "Master Looter",
-            "Group Loot",
-            "Need Before Greed"});
+            PartySettings.StringFreeForAll,
+            PartySettings.StringRoundRobin,
+            PartySettings.StringMasterLooter,
+            PartySettings.StringGroupLoot,
+            PartySettings.StringNeedBeforeGreed});
             this.partyLeaderLootComboBox.Location = new System.Drawing.Point(121, 20);
             this.partyLeaderLootComboBox.Name = "partyLeaderLootComboBox";
             this.partyLeaderLootComboBox.Size = new System.Drawing.Size(162, 23);
@@ -425,18 +421,13 @@
             // 
             // partyMemberSetRoleComboBox
             // 
-            this.partyMemberSetRoleComboBox.AutoCompleteCustomSource.AddRange(new string[] {
-            "None",
-            "Tank",
-            "Healer",
-            "Damage"});
             this.partyMemberSetRoleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyMemberSetRoleComboBox.FormattingEnabled = true;
             this.partyMemberSetRoleComboBox.Items.AddRange(new object[] {
-            "No Role",
-            "Tank",
-            "Healer",
-            "Damage"});
+            PartySettings.StringNoRole,
+            PartySettings.StringTank,
+            PartySettings.StringHealer,
+            PartySettings.StringDamage});
             this.partyMemberSetRoleComboBox.Location = new System.Drawing.Point(121, 49);
             this.partyMemberSetRoleComboBox.Name = "partyMemberSetRoleComboBox";
             this.partyMemberSetRoleComboBox.Size = new System.Drawing.Size(162, 23);
@@ -445,14 +436,11 @@
             // 
             // partyMemberPassOnLootComboBox
             // 
-            this.partyMemberPassOnLootComboBox.AutoCompleteCustomSource.AddRange(new string[] {
-            "No",
-            "Yes"});
             this.partyMemberPassOnLootComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.partyMemberPassOnLootComboBox.FormattingEnabled = true;
             this.partyMemberPassOnLootComboBox.Items.AddRange(new object[] {
-            "No",
-            "Yes"});
+            PartySettings.StringNo,
+            PartySettings.StringYes});
             this.partyMemberPassOnLootComboBox.Location = new System.Drawing.Point(121, 17);
             this.partyMemberPassOnLootComboBox.Name = "partyMemberPassOnLootComboBox";
             this.partyMemberPassOnLootComboBox.Size = new System.Drawing.Size(162, 23);

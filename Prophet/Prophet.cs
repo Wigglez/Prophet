@@ -80,12 +80,12 @@ namespace Prophet {
             }
 
             // The default settings
-            if(PartySettings.Instance.PartyClassification == "None") {
+            if(PartySettings.Instance.PartyClassification == PartySettings.StringNone) {
                 return;
             }
             
             // If the user is the party leader
-            if(PartySettings.Instance.PartyClassification == "Party Leader") {
+            if(PartySettings.Instance.PartyClassification == PartySettings.StringPartyLeader) {
                 PartyMember.DetermineNameAndRealm();
                 
                 // Constantly update the amount of people we should have in group (in case it changes)
@@ -115,7 +115,7 @@ namespace Prophet {
             }
 
             // If the user is the party member
-            if(PartySettings.Instance.PartyClassification != "Party Member") {
+            if(PartySettings.Instance.PartyClassification != PartySettings.StringPartyMember) {
                 return;
             }
 

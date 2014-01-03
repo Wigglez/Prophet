@@ -11,16 +11,8 @@ namespace Prophet {
             // Party Classification
             characterRoleComboBox.Text = PartySettings.Instance.PartyClassification;
 
-            /*
-            for(var i = 0; i < PartySettings.Instance.PartyMemberName.Length; i++) {
-                if(string.IsNullOrEmpty(PartySettings.Instance.PartyMemberName[i])) {
-                    PartySettings.Instance.PartyMemberName[i] = "";
-                }
-            }
-             */
-
-            PartyLeader.DetermineNameAndRealm();
-            PartyMember.DetermineNameAndRealm();
+            //PartyLeader.DetermineNameAndRealm();
+            //PartyMember.DetermineNameAndRealm();
             
             // Party Leader
             partyMember1TextBox.Text = PartySettings.Instance.PartyMemberName[0];
@@ -63,7 +55,7 @@ namespace Prophet {
         
         // Character Classification
         private void characterRoleComboBox_SelectedValueChanged(object sender, EventArgs e) {
-            if(characterRoleComboBox.Text == "None") {
+            if(characterRoleComboBox.Text == PartySettings.StringNone) {
                 partyLeaderGroupBox.Visible = false;
                 partyMemberGroupBox.Visible = false;
 
@@ -71,7 +63,7 @@ namespace Prophet {
                 partyMemberPrivilegesGroupBox.Visible = false;
             }
 
-            if(characterRoleComboBox.Text == "Party Leader") {
+            if(characterRoleComboBox.Text == PartySettings.StringPartyLeader) {
                 partyLeaderGroupBox.Visible = true;
                 partyMemberGroupBox.Visible = false;
 
@@ -79,7 +71,7 @@ namespace Prophet {
                 partyMemberPrivilegesGroupBox.Visible = false;
             }
 
-            if(characterRoleComboBox.Text == "Party Member") {
+            if(characterRoleComboBox.Text == PartySettings.StringPartyMember) {
                 partyLeaderGroupBox.Visible = false;
                 partyMemberGroupBox.Visible = true;
 

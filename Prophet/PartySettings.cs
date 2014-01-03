@@ -2,7 +2,6 @@
 using System.IO;
 using Styx;
 using Styx.Common;
-using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
 namespace Prophet {
     public class PartySettings {
@@ -10,6 +9,38 @@ namespace Prophet {
         // ===========================================================
         // Constants
         // ===========================================================
+
+        // Party Classification
+        public const string StringNone = "None";
+        public const string StringPartyLeader = "Party Leader";
+        public const string StringPartyMember = "Party Member";
+
+        // Loot
+        public const string StringFreeForAll = "Free For All";
+        public const string StringRoundRobin = "Round Robin";
+        public const string StringMasterLooter = "Master Looter";
+        public const string StringGroupLoot = "Group Loot";
+        public const string StringNeedBeforeGreed = "Need Before Greed";
+    
+        // Loot Threshold
+        public const string StringUncommon = "Uncommon";
+        public const string StringRare = "Rare";
+        public const string StringEpic = "Epic";
+
+        // Dungeon Difficulty
+        public const string String5PlayerNormal = "5 Player Normal";
+        public const string String5PlayerHeroic = "5 Player Heroic";
+        public const string StringChallengeMode = "Challenge Mode";
+
+        // Pass on Loot
+        public const string StringNo = "No";
+        public const string StringYes = "Yes";
+        
+        // Set Role
+        public const string StringNoRole = "No Role";
+        public const string StringTank = "Tank";
+        public const string StringHealer = "Healer";
+        public const string StringDamage = "Damage";
 
         // ===========================================================
         // Fields
@@ -19,12 +50,12 @@ namespace Prophet {
 
         private string[] _partyMemberName = new string[4];
 
-        private string _partyClassification = "None";
-        private string _loot = "Group Loot";
-        private string _lootThreshold = "Uncommon";
-        private string _dungeonDifficulty = "5 Player Normal";
-        private string _passOnLoot = "No";
-        private string _setRole = "No Role";
+        private string _partyClassification = StringNone;
+        private string _loot = StringGroupLoot;
+        private string _lootThreshold = StringUncommon;
+        private string _dungeonDifficulty = String5PlayerNormal;
+        private string _passOnLoot = StringNo;
+        private string _setRole = StringNoRole;
 
         // ===========================================================
         // Constructors
@@ -48,22 +79,16 @@ namespace Prophet {
             get { return Path.Combine(Utilities.AssemblyDirectory, string.Format(@"Settings\{0}\{1}-{2}\{3}.xml", "Prophet", StyxWoW.Me.Name, StyxWoW.Me.RealmName, "PartySettings")); }
         }
 
-        // Classification shit
+        // Classification
         public string PartyClassification { get { return _partyClassification; } set { _partyClassification = value; } }
 
-        // Party leader shit
+        // Party leader
         public string[] PartyMemberName { get { return _partyMemberName; } set { _partyMemberName = value; } }
-        /*
-        public string PartyMemberName1 { get; set; }
-        public string PartyMemberName2 { get; set; }
-        public string PartyMemberName3 { get; set; }
-        public string PartyMemberName4 { get; set; }
-         */
 
-        // Party member shit
+        // Party member
         public string PartyLeaderName { get; set; }
 
-        // Privileges shit
+        // Privileges
         public string Loot { get { return _loot; } set { _loot = value; } }
         public string LootThreshold { get { return _lootThreshold; } set { _lootThreshold = value; }}
         public string DungeonDifficulty { get { return _dungeonDifficulty; } set { _dungeonDifficulty = value; } }
