@@ -65,7 +65,7 @@ namespace Prophet {
         public static bool Exists() { return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName); }
 
         public static int GetRequiredPartyCount() {
-            /*
+           
             var count = 0;
 
             for(var i = 0; i < PartySettings.Instance.PartyMemberName.Length; i++) {
@@ -76,9 +76,9 @@ namespace Prophet {
            
 
             return count;
-             */
+            
 
-            return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
+            //return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
         }
 
         public static bool ShouldInvite(string name) {
