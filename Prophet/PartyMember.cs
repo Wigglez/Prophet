@@ -62,9 +62,11 @@ namespace Prophet {
         public static void LeaveParty() {
             if(PartySettings.Instance.PartyClassification != "Party Member") { return; }
 
+            if(Character.GroupMemberExistsInParty(PartyLeader.NameAndRealm)) { return; }
+
             if(Character.GroupMemberExistsInParty(PartyLeader.Name)) { return; }
 
-            Prophet.CustomNormalLog("Party leader {0} isn't in group, leaving group.", PartyLeader.Name);
+            Prophet.CustomNormalLog("Party leader {0} isn't in group, leaving group.", PartyLeader.NameAndRealm);
             Lua.DoString("LeaveParty()");
         }
 

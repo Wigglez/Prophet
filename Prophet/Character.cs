@@ -56,7 +56,7 @@ namespace Prophet {
 
             Prophet.CustomNormalLog("We got an invite from " + partyInviteSender + ".");
 
-            if(partyInviteSender == PartyLeader.Name) {
+            if(partyInviteSender == PartyLeader.NameAndRealm || partyInviteSender == PartyLeader.Name) {
                 AcceptInvite();
             } else {
                 DeclineInvite();
