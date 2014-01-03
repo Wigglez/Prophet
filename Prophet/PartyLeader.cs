@@ -95,10 +95,6 @@ namespace Prophet {
                 }
 
                 if(!ShouldInvite(PartyMember.Name[i])) { continue; }
-                Prophet.CustomNormalLog("RequiredPartyCount = {0}", RequiredPartyCount);
-                Prophet.CustomNormalLog("GetNumGroupMembers = {0}", Character.GetNumGroupMembers());
-
-                Prophet.CustomNormalLog("SendOutInvites: Name = {0}", PartyMember.Name[i]);
 
                 // Scan the friends list for our friend
                 if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
