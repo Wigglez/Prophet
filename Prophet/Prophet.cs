@@ -140,8 +140,8 @@ namespace Prophet {
 
 
             if(Character.Me.IsLeader()) {
-                if(Character.GroupMemberExistsInParty(PartySettings.Instance.PartyLeaderName)) {
-                    Lua.DoString(string.Format("PromoteToLeader('{0}');", PartySettings.Instance.PartyLeaderName));
+                if(Character.GroupMemberExistsInParty(PartyLeader.Name)) {
+                    Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.Name));
                 }
             }
 
