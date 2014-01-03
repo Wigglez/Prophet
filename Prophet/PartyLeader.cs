@@ -17,7 +17,8 @@ namespace Prophet {
         // Fields
         // ===========================================================
 
-        public static Stopwatch PartyLeaderTimer = new Stopwatch();
+        public static Stopwatch HandlePartyFunctionsTimer = new Stopwatch();
+        public static Stopwatch InviteTimer = new Stopwatch();
 
         public static string Name;
         public static string Realm;
@@ -94,10 +95,10 @@ namespace Prophet {
                 }
 
                 if(!ShouldInvite(PartyMember.Name[i])) { continue; }
-                //Prophet.CustomNormalLog("RequiredPartyCount = {0}", RequiredPartyCount);
-                //Prophet.CustomNormalLog("GetNumGroupMembers = {0}", GetNumGroupMembers());
+                Prophet.CustomNormalLog("RequiredPartyCount = {0}", RequiredPartyCount);
+                Prophet.CustomNormalLog("GetNumGroupMembers = {0}", Character.GetNumGroupMembers());
 
-                //Prophet.CustomNormalLog("SendOutInvites: Name = {0}", PartyMember.Name[i]);
+                Prophet.CustomNormalLog("SendOutInvites: Name = {0}", PartyMember.Name[i]);
 
                 // Scan the friends list for our friend
                 if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
@@ -106,13 +107,13 @@ namespace Prophet {
                 }
 
                 // Invite the friend using the current presence id
-                if(!PartyLeaderTimer.IsRunning) {
+                if(!InviteTimer.IsRunning) {
                     //Prophet.CustomNormalLog("SendOutInvites: Presence ID = {0}", PresenceID);
                     BNInviteFriend();
-                    PartyLeaderTimer.Start();
+                    InviteTimer.Start();
                 } else {
-                    if(PartyLeaderTimer.ElapsedMilliseconds >= 2000) {
-                        PartyLeaderTimer.Reset();
+                    if(InviteTimer.ElapsedMilliseconds >= 1000) {
+                        InviteTimer.Reset();
                     }
                 }
             }

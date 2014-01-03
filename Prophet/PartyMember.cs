@@ -18,7 +18,7 @@ namespace Prophet {
         public static string[] Realm = new string[4];
         public static string[] NameAndRealm = new string[4];
 
-        public static Stopwatch PartyMemberTimer = new Stopwatch();
+        public static Stopwatch AcceptInviteTimer = new Stopwatch();
 
         // ===========================================================
         // Constructors
@@ -52,8 +52,6 @@ namespace Prophet {
                 }
 
                 NameAndRealm[i] = Name[i] + "-" + Realm[i];
-
-                Prophet.CustomDiagnosticLog("PartyMember (DetermineNameAndRealm): Name: {0} Realm: {1} NameAndRealm: {2} Added", Name[i], Realm[i], NameAndRealm[i]);
             }
         }
 

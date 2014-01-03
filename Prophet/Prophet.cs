@@ -96,22 +96,22 @@ namespace Prophet {
                     return;
                 }
 
+                PartyLeader.SendOutInvites();
+
                 if(Character.Me.GroupInfo.IsInParty) {
-                    if(!PartyLeader.PartyLeaderTimer.IsRunning) {
+                    if(!PartyLeader.HandlePartyFunctionsTimer.IsRunning) {
                         Character.HandleLootMethod();
                         Character.HandleLootThreshold();
                         Character.HandleDungeonDifficulty();
                         Character.HandlePassOnLoot();
                         Character.HandleSetRole();
-                        PartyLeader.PartyLeaderTimer.Start();
+                        PartyLeader.HandlePartyFunctionsTimer.Start();
                     } else {
-                        if(PartyLeader.PartyLeaderTimer.ElapsedMilliseconds > 1000) {
-                            PartyLeader.PartyLeaderTimer.Reset();
+                        if(PartyLeader.HandlePartyFunctionsTimer.ElapsedMilliseconds > 1000) {
+                            PartyLeader.HandlePartyFunctionsTimer.Reset();
                         }
                     }
                 }
-
-                PartyLeader.SendOutInvites();
             }
 
             // If the user is the party member
@@ -130,14 +130,14 @@ namespace Prophet {
                 return;
             }
 
-            if(!PartyMember.PartyMemberTimer.IsRunning) {
-                PartyMember.PartyMemberTimer.Start();
+            if(!PartyMember.AcceptInviteTimer.IsRunning) {
+                PartyMember.AcceptInviteTimer.Start();
             } else {
-                if(PartyMember.PartyMemberTimer.ElapsedMilliseconds < 500) {
+                if(PartyMember.AcceptInviteTimer.ElapsedMilliseconds < 500) {
                     return;
                 }
 
-                PartyMember.PartyMemberTimer.Reset();
+                PartyMember.AcceptInviteTimer.Reset();
             }
 
 
