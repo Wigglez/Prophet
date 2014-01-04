@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bots.DungeonBuddy.Helpers;
 using Styx;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
@@ -34,18 +33,6 @@ namespace Prophet {
         // ===========================================================
         // Methods
         // ===========================================================
-
-        public static void AcceptInvite() {
-            Prophet.CustomNormalLog("Accepted invite.");
-            Lua.DoString("AcceptGroup()");
-        }
-
-        public static void DeclineInvite() {
-            Prophet.CustomNormalLog("Declined invite due to invalid leader.");
-            Lua.DoString("DeclineGroup()");
-
-            HandleStaticPopup();
-        }
 
         public static void HandlePartyInviteRequest(object sender, LuaEventArgs args) {
             if(PartySettings.Instance.PartyClassification == PartySettings.StringPartyLeader) {
@@ -81,16 +68,17 @@ namespace Prophet {
             return StyxWoW.Me.GroupInfo.RaidMembers.Count();
         }
 
+        // Can pass in a name alone or both name and realm
         public static bool GroupMemberExistsInParty(string nameAndRealm) {
             if(GetNumGroupMembers() <= 1) {
                 return false;
             }
 
             var nameNoRealm = nameAndRealm;
-            
-            if(nameAndRealm.Contains('-')) {
-                var index = nameAndRealm.IndexOf('-');
-                var toonRealm = nameAndRealm.Substring(index + 1);
+
+            if(nameNoRealm.Contains('-')) {
+                var index = nameNoRealm.IndexOf('-');
+                var toonRealm = nameNoRealm.Substring(index + 1);
 
                 var leaderRealm = Me.RealmName;
 
@@ -124,22 +112,6 @@ namespace Prophet {
             Prophet.CustomNormalLog("I am the leader, trying to promote designated leader.");
             Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.Name));
             Lua.DoString(string.Format("PromoteToLeader('{0}');", PartyLeader.NameAndRealm));
-        }
-
-        // method, partyMaster, raidMaster
-        public static List<string> GetLootMethod() {
-            return Lua.GetReturnValues("return GetLootMethod()");
-        }
-
-        public static void SetLootMethod(string method) {
-            /*
-             * freeforall - Free for All - any group member can take any loot at any time
-             * group - Group Loot - like Round Robin, but items above a quality threshold are rolled on
-             * master - Master Looter - like Round Robin, but items above a quality threshold are left for a designated loot master to
-             * needbeforegreed - Need before Greed - like Group Loot, but members automatically pass on items
-             * roundrobin - Round Robin - group members take turns being able to loot
-             */
-            Lua.DoString(method == "master" ? String.Format("SetLootMethod('{0}', '{1}')", method, Me.Name) : String.Format("SetLootMethod('{0}')", method));
         }
 
         public static void HandleLootMethod() {
@@ -189,24 +161,6 @@ namespace Prophet {
             }
         }
 
-        public static int GetLootThreshold() {
-            return Lua.GetReturnVal<int>("return GetLootThreshold()", 0);
-        }
-
-        public static void SetLootThreshold(int threshold) {
-            /*
-             * 0. Poor (gray)
-             * 1. Common (white)
-             * 2. Uncommon (green)
-             * 3. Rare / Superior (blue)
-             * 4. Epic (purple)
-             * 5. Legendary (orange)
-             * 6. Artifact (golden yellow)
-             * 7. Heirloom (light yellow)
-             */
-            Lua.DoString(String.Format("SetLootThreshold({0})", threshold));
-        }
-
         public static void HandleLootThreshold() {
             var lootThreshold = GetLootThreshold();
 
@@ -236,30 +190,6 @@ namespace Prophet {
 
                     break;
             }
-        }
-
-        public static int GetDungeonDifficultyID() {
-            /*
-             * 1 - "Normal"
-             * 2 - "Heroic"
-             * 3 - "10 Player"
-             * 4 - "25 Player"
-             * 5 - "10 Player (Heroic)"
-             * 6 - "25 Player (Heroic)"
-             * 7 - "Looking For Raid"
-             * 8 - "Challenge Mode"
-             * 9 - "40 Player"
-             * 10 - nil
-             * 11 - "Heroic Scenario"
-             * 12 - "Normal Scenario"
-             * 13 - nil
-             * 14 - "Flexible"
-             */
-            return Lua.GetReturnVal<int>("return GetDungeonDifficultyID()", 0);
-        }
-
-        public static void SetDungeonDifficultyID(int difficultyIndex) {
-            Lua.DoString("SetDungeonDifficultyID({0})", difficultyIndex);
         }
 
         public static void HandleDungeonDifficulty() {
@@ -293,16 +223,6 @@ namespace Prophet {
             }
         }
 
-        public static int GetOptOutOfLoot() {
-            // Returns 1 if opted out, otherwise nil
-            return Lua.GetReturnVal<int>("return GetOptOutOfLoot()", 0);
-        }
-
-        public static void SetOptOutOfLoot(string optOut) {
-            // True to opt out, false to participate in loot rolls
-            Lua.DoString(String.Format("SetOptOutOfLoot({0})", optOut));
-        }
-
         public static void HandlePassOnLoot() {
             var passOnLoot = GetOptOutOfLoot();
 
@@ -324,26 +244,6 @@ namespace Prophet {
 
                     break;
             }
-        }
-
-        public static string UnitGroupRoleAssigned() {
-            /*
-             * DAMAGER
-             * HEALER
-             * NONE
-             * TANK
-             */
-            return Lua.GetReturnVal<string>("return UnitGroupRolesAssigned('player')", 0);
-        }
-
-        public static void UnitSetRole(string role) {
-            /*
-             * DAMAGER
-             * HEALER
-             * NONE
-             * TANK
-             */
-            Lua.DoString(String.Format("UnitSetRole('player', '{0}')", role));
         }
 
         public static void HandleSetRole() {
@@ -388,5 +288,105 @@ namespace Prophet {
         // ===========================================================
         // Inner and Anonymous Classes
         // ===========================================================
+
+        private static void AcceptInvite() {
+            Prophet.CustomNormalLog("Accepted invite.");
+            Lua.DoString("AcceptGroup()");
+        }
+
+        private static void DeclineInvite() {
+            Prophet.CustomNormalLog("Declined invite due to invalid leader.");
+            Lua.DoString("DeclineGroup()");
+
+            HandleStaticPopup();
+        }
+
+        // method, partyMaster, raidMaster
+        private static List<string> GetLootMethod() {
+            return Lua.GetReturnValues("return GetLootMethod()");
+        }
+
+        private static void SetLootMethod(string method) {
+            /*
+             * freeforall - Free for All - any group member can take any loot at any time
+             * group - Group Loot - like Round Robin, but items above a quality threshold are rolled on
+             * master - Master Looter - like Round Robin, but items above a quality threshold are left for a designated loot master to
+             * needbeforegreed - Need before Greed - like Group Loot, but members automatically pass on items
+             * roundrobin - Round Robin - group members take turns being able to loot
+             */
+            Lua.DoString(method == "master" ? String.Format("SetLootMethod('{0}', '{1}')", method, Me.Name) : String.Format("SetLootMethod('{0}')", method));
+        }
+
+        private static int GetLootThreshold() {
+            return Lua.GetReturnVal<int>("return GetLootThreshold()", 0);
+        }
+
+        private static void SetLootThreshold(int threshold) {
+            /*
+             * 0. Poor (gray)
+             * 1. Common (white)
+             * 2. Uncommon (green)
+             * 3. Rare / Superior (blue)
+             * 4. Epic (purple)
+             * 5. Legendary (orange)
+             * 6. Artifact (golden yellow)
+             * 7. Heirloom (light yellow)
+             */
+            Lua.DoString(String.Format("SetLootThreshold({0})", threshold));
+        }
+
+        private static int GetDungeonDifficultyID() {
+            /*
+             * 1 - "Normal"
+             * 2 - "Heroic"
+             * 3 - "10 Player"
+             * 4 - "25 Player"
+             * 5 - "10 Player (Heroic)"
+             * 6 - "25 Player (Heroic)"
+             * 7 - "Looking For Raid"
+             * 8 - "Challenge Mode"
+             * 9 - "40 Player"
+             * 10 - nil
+             * 11 - "Heroic Scenario"
+             * 12 - "Normal Scenario"
+             * 13 - nil
+             * 14 - "Flexible"
+             */
+            return Lua.GetReturnVal<int>("return GetDungeonDifficultyID()", 0);
+        }
+
+        private static void SetDungeonDifficultyID(int difficultyIndex) {
+            Lua.DoString("SetDungeonDifficultyID({0})", difficultyIndex);
+        }
+
+        private static int GetOptOutOfLoot() {
+            // Returns 1 if opted out, otherwise nil
+            return Lua.GetReturnVal<int>("return GetOptOutOfLoot()", 0);
+        }
+
+        private static void SetOptOutOfLoot(string optOut) {
+            // True to opt out, false to participate in loot rolls
+            Lua.DoString(String.Format("SetOptOutOfLoot({0})", optOut));
+        }
+
+        private static string UnitGroupRoleAssigned() {
+            /*
+             * DAMAGER
+             * HEALER
+             * NONE
+             * TANK
+             */
+            return Lua.GetReturnVal<string>("return UnitGroupRolesAssigned('player')", 0);
+        }
+
+        private static void UnitSetRole(string role) {
+            /*
+             * DAMAGER
+             * HEALER
+             * NONE
+             * TANK
+             */
+            Lua.DoString(String.Format("UnitSetRole('player', '{0}')", role));
+        }
     }
 }

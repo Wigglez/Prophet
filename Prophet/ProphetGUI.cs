@@ -11,9 +11,6 @@ namespace Prophet {
             // Party Classification
             characterRoleComboBox.Text = PartySettings.Instance.PartyClassification;
 
-            //PartyLeader.DetermineNameAndRealm();
-            //PartyMember.DetermineNameAndRealm();
-            
             // Party Leader
             partyMember1TextBox.Text = PartySettings.Instance.PartyMemberName[0];
             partyMember2TextBox.Text = PartySettings.Instance.PartyMemberName[1];

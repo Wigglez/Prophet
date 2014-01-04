@@ -20,10 +20,6 @@ namespace Prophet {
         public static Stopwatch HandlePartyFunctionsTimer = new Stopwatch();
         public static Stopwatch InviteTimer = new Stopwatch();
 
-        public static string Name;
-        public static string Realm;
-        public static string NameAndRealm;
-
         // ===========================================================
         // Constructors
         // ===========================================================
@@ -31,6 +27,10 @@ namespace Prophet {
         // ===========================================================
         // Getter & Setter
         // ===========================================================
+
+        public static string Name { get; set; }
+        public static string Realm { get; set; }
+        public static string NameAndRealm { get; set; }
 
         public static int PresenceID { get; set; }
 
@@ -61,16 +61,16 @@ namespace Prophet {
             NameAndRealm = Name + "-" + Realm;
         }
 
-        public static bool CanInvite() { return Character.Me.IsValid && StyxWoW.IsInGame; }
+        public static bool CanInvite() {
+            return Character.Me.IsValid && StyxWoW.IsInGame;
+        }
 
-        public static bool Exists() { return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName); }
+        public static bool Exists() {
+            return !string.IsNullOrEmpty(PartySettings.Instance.PartyLeaderName);
+        }
 
         public static int GetRequiredPartyCount() {
             return PartySettings.Instance.PartyMemberName.Count(t => !string.IsNullOrEmpty(t));
-        }
-
-        public static bool ShouldInvite(string nameAndRealm) {
-            return !string.IsNullOrEmpty(nameAndRealm) && !Character.GroupMemberExistsInParty(nameAndRealm);
         }
 
         public static void SendOutInvites() {
@@ -78,22 +78,27 @@ namespace Prophet {
 
             for(var i = 0; i < RequiredPartyCount; i++) {
                 if(Character.Me.GroupInfo.IsInParty) {
+                    // Is the party count satisfied?
                     if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
                 }
 
                 if(!ShouldInvite(PartyMember.NameAndRealm[i])) { continue; }
 
-                // Scan the friends list for our friend
-                if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
-                    Prophet.CustomNormalLog("Can't invite {0}. Is this player on your Battle.net Friends List or offline?", PartyMember.NameAndRealm[i]);
-                    continue;
-                }
-
-                // Invite the friend using the current presence id
                 if(!InviteTimer.IsRunning) {
-                    //Prophet.CustomNormalLog("SendOutInvites: Presence ID = {0}", PresenceID);
-                    BNInviteFriend();
-                    InviteTimer.Start();
+                    if(PartyMember.Realm[i] == Character.Me.RealmName) {
+                        Lua.DoString("InviteUnit('{0}')", PartyMember.Name[i]);
+                        InviteTimer.Start();
+                    } else {
+                        // Scan the friends list for our friend
+                        if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
+                            Prophet.CustomNormalLog("Can't invite {0}. Not found or offline on Battle.net friends list.", PartyMember.NameAndRealm[i]);
+                            continue;
+                        }
+
+                        // Invite the friend using the current presence id
+                        BNInviteFriend();
+                        InviteTimer.Start();
+                    }
                 } else {
                     if(InviteTimer.ElapsedMilliseconds >= 1000) {
                         InviteTimer.Reset();
@@ -102,21 +107,29 @@ namespace Prophet {
             }
         }
 
-        public static int BNGetNumFriends() {
+        // ===========================================================
+        // Inner and Anonymous Classes
+        // ===========================================================
+
+        private static bool ShouldInvite(string nameAndRealm) {
+            return !string.IsNullOrEmpty(nameAndRealm) && !Character.GroupMemberExistsInParty(nameAndRealm);
+        }
+
+        private static int BNGetNumFriends() {
             return Lua.GetReturnVal<int>("return BNGetNumFriends()", 0);
         }
 
         // presenceID, givenName, surname, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, broadcastText, noteText, isFriend, broadcastTime  = BNGetFriendInfo(friendIndex)
-        public static List<string> BNGetFriendInfo(int i) {
+        private static List<string> BNGetFriendInfo(int i) {
             return Lua.GetReturnValues(String.Format("return BNGetFriendInfo({0})", i));
         }
 
         // hasFocus, toonName, client, realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, canSoR, toonID = BNGetToonInfo(presenceID or toonID)
-        public static List<string> BNGetToonInfo(int presenceID) {
+        private static List<string> BNGetToonInfo(int presenceID) {
             return Lua.GetReturnValues(String.Format("return BNGetToonInfo({0})", presenceID));
         }
 
-        public static bool BNCanInvite(string nameAndRealm) {
+        private static bool BNCanInvite(string nameAndRealm) {
             var numFriends = BNGetNumFriends();
 
             //Prophet.CustomNormalLog("BNCanInvite: numFriends = {0}", numFriends);
@@ -146,12 +159,8 @@ namespace Prophet {
             return false;
         }
 
-        public static void BNInviteFriend() {
+        private static void BNInviteFriend() {
             Lua.DoString(String.Format("BNInviteFriend({0})", PresenceID));
         }
-
-        // ===========================================================
-        // Inner and Anonymous Classes
-        // ===========================================================
     }
 }

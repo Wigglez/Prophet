@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using Bots.DungeonBuddy.Helpers;
 using Styx.Common;
 using Styx.Plugins;
 using Styx.WoWInternals;
