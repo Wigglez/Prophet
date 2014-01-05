@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
+    <Compile Include="CustomBlacklist.cs" />
     <Compile Include="ObjectXMLSerializer.cs" />
     <Compile Include="PartyLeader.cs" />
     <Compile Include="PartyMember.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="ProphetGUI.Designer.cs">
       <DependentUpon>ProphetGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="RandomNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProphetGUI.resx">

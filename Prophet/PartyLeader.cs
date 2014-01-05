@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Chameleon.Helpers;
 using Styx;
 using Styx.Helpers;
 using Styx.WoWInternals;
@@ -85,20 +86,29 @@ namespace Prophet {
                 if(!ShouldInvite(PartyMember.NameAndRealm[i])) { continue; }
 
                 if(!InviteTimer.IsRunning) {
+                    if(CustomBlacklist.ContainsName(PartyMember.Name[i])) {
+                        continue;
+                    }
+
+                    // Send out invites
                     if(PartyMember.Realm[i] == Character.Me.RealmName) {
                         Lua.DoString(string.Format("InviteUnit('{0}')", PartyMember.Name[i]));
-                        InviteTimer.Start();
                     } else {
-                        // Scan the friends list for our friend
                         if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
-                            Prophet.CustomNormalLog("Can't invite {0}. Not found or offline on Battle.net friends list.", PartyMember.NameAndRealm[i]);
-                            continue;
+                            Prophet.CustomNormalLog("Friend could not be found on Battle.net Friends List or is offline.");
+                        } else {
+                            BNInviteFriend();
                         }
-
-                        // Invite the friend using the current presence id
-                        BNInviteFriend();
-                        InviteTimer.Start();
                     }
+
+                    Prophet.CustomNormalLog("Invited {0}.", PartyMember.Name[i]);
+
+                    // Start timer and blacklist
+                    InviteTimer.Start();
+
+                    var timeToBlacklist = RandomNumber.GenerateRandomInt(61, 75);
+                    CustomBlacklist.AddName(PartyMember.Name[i], TimeSpan.FromSeconds(timeToBlacklist));
+                    Prophet.CustomDiagnosticLog("Blacklisted {0} from invites for {1} seconds.", PartyMember.Name[i], timeToBlacklist);
                 } else {
                     if(InviteTimer.ElapsedMilliseconds >= 1000) {
                         InviteTimer.Reset();
@@ -131,8 +141,6 @@ namespace Prophet {
 
         private static bool BNCanInvite(string nameAndRealm) {
             var numFriends = BNGetNumFriends();
-
-            //Prophet.CustomNormalLog("BNCanInvite: numFriends = {0}", numFriends);
 
             for(var i = 1; i <= numFriends; i++) {
                 try {

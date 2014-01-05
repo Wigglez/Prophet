@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using Chameleon.Helpers;
 using Styx.Common;
 using Styx.Plugins;
 using Styx.WoWInternals;
@@ -53,6 +54,8 @@ namespace Prophet {
 
         public override void OnEnable() {
             try {
+                CustomBlacklist.SweepTimer();
+
                 Lua.Events.AttachEvent("PARTY_INVITE_REQUEST", Character.HandlePartyInviteRequest);
                 base.OnEnable();
             } catch(Exception e) {
@@ -64,6 +67,8 @@ namespace Prophet {
 
         public override void OnDisable() {
             try {
+                CustomBlacklist.RemoveAllNames();
+
                 Lua.Events.DetachEvent("PARTY_INVITE_REQUEST", Character.HandlePartyInviteRequest);
                 base.OnDisable();
             } catch(Exception e) {
