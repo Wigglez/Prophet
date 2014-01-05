@@ -86,7 +86,7 @@ namespace Prophet {
 
                 if(!InviteTimer.IsRunning) {
                     if(PartyMember.Realm[i] == Character.Me.RealmName) {
-                        Lua.DoString("InviteUnit('{0}')", PartyMember.Name[i]);
+                        Lua.DoString(string.Format("InviteUnit('{0}')", PartyMember.Name[i]));
                         InviteTimer.Start();
                     } else {
                         // Scan the friends list for our friend
