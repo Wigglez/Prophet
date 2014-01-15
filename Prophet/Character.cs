@@ -74,7 +74,7 @@ namespace Prophet {
                 return false;
             }
 
-            var nameNoRealm = nameAndRealm;
+            var nameNoRealm = nameAndRealm.Replace(" ", "");
 
             if(nameNoRealm.Contains('-')) {
                 var index = nameNoRealm.IndexOf('-');
