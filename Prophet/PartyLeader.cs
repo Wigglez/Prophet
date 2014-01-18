@@ -52,7 +52,7 @@ namespace Prophet {
 
             if(!PartySettings.Instance.PartyLeaderName.Contains('-')) {
                 Name = PartySettings.Instance.PartyLeaderName;
-                Realm = Character.Me.RealmName;
+                Realm = StyxWoW.Me.RealmName;
             } else {
                 var indexOfDash = PartySettings.Instance.PartyLeaderName.IndexOf('-');
                 Name = PartySettings.Instance.PartyLeaderName.Substring(0, indexOfDash);
@@ -63,7 +63,7 @@ namespace Prophet {
         }
 
         public static bool CanInvite() {
-            return Character.Me.IsValid && StyxWoW.IsInGame;
+            return StyxWoW.Me.IsValid && StyxWoW.IsInGame;
         }
 
         public static bool Exists() {
@@ -75,15 +75,21 @@ namespace Prophet {
         }
 
         public static void SendOutInvites() {
-            if(PartySettings.Instance.PartyClassification != PartySettings.StringPartyLeader) { return; }
+            if(PartySettings.Instance.PartyClassification != PartySettings.StringPartyLeader) {
+                return;
+            }
 
             for(var i = 0; i < RequiredPartyCount; i++) {
-                if(Character.Me.GroupInfo.IsInParty) {
+                if(StyxWoW.Me.GroupInfo.IsInParty) {
                     // Is the party count satisfied?
-                    if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) { continue; }
+                    if(Character.GetNumGroupMembers() >= RequiredPartyCount + 1) {
+                        continue;
+                    }
                 }
 
-                if(!ShouldInvite(PartyMember.NameAndRealm[i])) { continue; }
+                if(!ShouldInvite(PartyMember.NameAndRealm[i])) {
+                    continue;
+                }
 
                 if(!InviteTimer.IsRunning) {
                     if(CustomBlacklist.ContainsName(PartyMember.Name[i])) {
@@ -91,9 +97,9 @@ namespace Prophet {
                     }
 
                     // Send out invites
-                    if(PartyMember.Realm[i] == Character.Me.RealmName) {
-                        Lua.DoString(string.Format("InviteUnit('{0}')", PartyMember.Name[i]));
-                    } else {
+                    Lua.DoString(string.Format("InviteUnit('{0}')", PartyMember.NameAndRealm[i]));
+
+                    if(PartyMember.Realm[i] != StyxWoW.Me.RealmName) {
                         if(!BNCanInvite(PartyMember.NameAndRealm[i])) {
                             Prophet.CustomNormalLog("Friend could not be found on Battle.net Friends List or is offline.");
                         } else {
@@ -101,7 +107,7 @@ namespace Prophet {
                         }
                     }
 
-                    Prophet.CustomNormalLog("Invited {0}.", PartyMember.Name[i]);
+                    Prophet.CustomNormalLog("Invited {0}.", PartyMember.NameAndRealm[i]);
 
                     // Start timer and blacklist
                     InviteTimer.Start();

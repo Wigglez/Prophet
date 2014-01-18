@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using Chameleon.Helpers;
+using Styx;
 using Styx.Common;
 using Styx.Plugins;
 using Styx.WoWInternals;
@@ -102,7 +103,7 @@ namespace Prophet {
 
                 PartyLeader.SendOutInvites();
 
-                if(Character.Me.GroupInfo.IsInParty) {
+                if(StyxWoW.Me.GroupInfo.IsInParty) {
                     if(!PartyLeader.HandlePartyFunctionsTimer.IsRunning) {
                         Character.HandleLootMethod();
                         Character.HandleLootThreshold();
@@ -130,7 +131,7 @@ namespace Prophet {
 
             PartyLeader.DetermineNameAndRealm();
 
-            if(!Character.Me.GroupInfo.IsInParty) {
+            if(!StyxWoW.Me.GroupInfo.IsInParty) {
                 return;
             }
 

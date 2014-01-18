@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Security.Permissions;
+using Styx;
 using Styx.WoWInternals;
 
 namespace Prophet {
@@ -44,7 +45,7 @@ namespace Prophet {
 
                 if(!PartySettings.Instance.PartyMemberName[i].Contains('-')) {
                     Name[i] = PartySettings.Instance.PartyMemberName[i];
-                    Realm[i] = Character.Me.RealmName;
+                    Realm[i] = StyxWoW.Me.RealmName;
                 } else {
                     var indexOfDash = PartySettings.Instance.PartyMemberName[i].IndexOf('-');
                     Name[i] = PartySettings.Instance.PartyMemberName[i].Substring(0, indexOfDash);

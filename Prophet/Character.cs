@@ -16,8 +16,6 @@ namespace Prophet {
         // Fields
         // ===========================================================
 
-        public static LocalPlayer Me = StyxWoW.Me;
-
         // ===========================================================
         // Constructors
         // ===========================================================
@@ -80,7 +78,7 @@ namespace Prophet {
                 var index = nameNoRealm.IndexOf('-');
                 var toonRealm = nameNoRealm.Substring(index + 1);
 
-                var leaderRealm = Me.RealmName;
+                var leaderRealm = StyxWoW.Me.RealmName;
 
                 if(leaderRealm == toonRealm) {
                     nameNoRealm = nameAndRealm.Substring(0, index);
@@ -101,7 +99,7 @@ namespace Prophet {
         }
 
         public static void HandlePartyLeaderPromotion() {
-            if(!Me.IsGroupLeader) {
+            if(!StyxWoW.Me.IsGroupLeader) {
                 return;
             }
 
@@ -314,7 +312,7 @@ namespace Prophet {
              * needbeforegreed - Need before Greed - like Group Loot, but members automatically pass on items
              * roundrobin - Round Robin - group members take turns being able to loot
              */
-            Lua.DoString(method == "master" ? String.Format("SetLootMethod('{0}', '{1}')", method, Me.Name) : String.Format("SetLootMethod('{0}')", method));
+            Lua.DoString(method == "master" ? String.Format("SetLootMethod('{0}', '{1}')", method, StyxWoW.Me.Name) : String.Format("SetLootMethod('{0}')", method));
         }
 
         private static int GetLootThreshold() {
